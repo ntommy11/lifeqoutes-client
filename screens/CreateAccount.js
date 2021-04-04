@@ -11,16 +11,12 @@ import {TextInput} from '../components/auth/AuthShared'
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccount(
-    $firstName: String!,
-    $lastName: String,
     $username: String!,
     $email: String!,
     $password: String!
   ){
     createAccount(
-      firstName: $firstName
-      lastName: $lastName
-      username: $username
+      name: $username
       email: $email
       password: $password
     ){
@@ -36,10 +32,10 @@ export default function CreateAccount({navigation}){
   const onCompleted = (data)=>{
     console.log(data);
     const {createAccount:{ok}} = data; // UNZIP data
-    const {username, password} = getValues();
+    const {email, password} = getValues();
     if(ok){
       navigation.navigate("Login",{
-        username:username,
+        email:email,
         password:password,
       });
     }
@@ -49,7 +45,6 @@ export default function CreateAccount({navigation}){
     onCompleted,
   });
   
-  const lastNmaeRef = useRef();
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -65,19 +60,15 @@ export default function CreateAccount({navigation}){
     if(!loading){
       createAccountMutation({
         variables:{
-          ...data,
+          username:data.username,
+          email:data.email,
+          password:data.password,
         }
       })
     }
   }
 
   useEffect(()=>{
-    register("firstName",{
-      required: true,
-    });
-    register("lastName",{
-      required: true,
-    });
     register("username",{
       required: true,
     });
@@ -91,24 +82,8 @@ export default function CreateAccount({navigation}){
   return(
     <AuthLayout>
         <TextInput 
-          autoFocus
-          placeholder="성"
-          placeholderTextColor="gray"
-          returnKeyType="next"
-          onSubmitEditing={()=>onNext(lastNmaeRef)}
-          onChangeText={(text)=>setValue("firstName",text)}
-        />
-        <TextInput 
-          ref={lastNmaeRef}
-          placeholder="이름"
-          placeholderTextColor="gray"
-          returnKeyType="next"
-          onSubmitEditing={()=>onNext(usernameRef)}
-          onChangeText={(text)=>setValue("lastName",text)}
-        />
-        <TextInput 
           ref = {usernameRef}
-          placeholder="아이디"
+          placeholder="이름"
           placeholderTextColor="gray"
           returnKeyType="next"
           onSubmitEditing={()=>onNext(emailRef)}
@@ -131,7 +106,7 @@ export default function CreateAccount({navigation}){
           lastOne={true}
           onChangeText={(text)=>setValue("password",text)}
         />
-        <AuthButton text="Create Account" disabled={false} onPress={handleSubmit(onValid)} />
+        <AuthButton text="계정 만들기" disabled={false} onPress={handleSubmit(onValid)} />
     </AuthLayout>
   )
 }

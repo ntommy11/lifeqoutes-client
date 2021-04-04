@@ -11,8 +11,8 @@ import { useMutation } from '@apollo/client';
 import { isLoggedInVar, logUserIn } from '../apollo';
 
 const LOGIN_MUTATION = gql`
-  mutation login($username: String!, $password: String!){
-    login(username:$username, password:$password){
+  mutation login($email: String!, $password: String!){
+    login(email:$email, password:$password){
       ok
       token
       error
@@ -25,7 +25,7 @@ export default function Login({route}){
   const {register, handleSubmit, setValue, watch} = useForm({
     defaultValues:{
       password: route?.params?.password,
-      username: route?.params?.username
+      email: route?.params?.email
     }
   })
   const passwordRef = useRef();
@@ -51,7 +51,7 @@ export default function Login({route}){
     if(!loading){
       loginMutation({
         variables:{
-          username:data.username,
+          email:data.email,
           password:data.password,
         }
       })
@@ -59,20 +59,20 @@ export default function Login({route}){
   }
 
   useEffect(()=>{
-    register("username");
+    register("email");
     register("password");
   },[register])// runs only once, or if the 'register' changes
 
   return(
     <AuthLayout>
       <TextInput
-        value={watch("username")}
+        value={watch("email")}
         autoCapitalize={"none"}
         placeholder="아이디"
         placeholderTextColor="gray"
         returnKeyType="next"
         onSubmitEditing={()=>onNext(passwordRef)}
-        onChangeText={(text)=>setValue("username",text)}
+        onChangeText={(text)=>setValue("email",text)}
       />
       <TextInput
         value={watch("password")}
@@ -85,7 +85,7 @@ export default function Login({route}){
       />
       <AuthButton 
         text="Log in" 
-        disabled={!watch("username")||!watch("password")}  
+        disabled={!watch("email")||!watch("password")}  
         onPress={handleSubmit(onValid)} 
         loading={loading} />
     </AuthLayout>

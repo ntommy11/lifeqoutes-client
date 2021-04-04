@@ -45,9 +45,9 @@ export default function Welcome({navigation}){
   const goToLogin = () => navigation.navigate("Login");
   return(
     <AuthLayout>
-      <AuthButton text="Create New Account" disabled={false} onPress={goToCreateAccount}/>
-      <TouchableOpacity onPress={goToLogin}>
-        <LoginLink>Log in</LoginLink>
+      <AuthButton text="계정 만들기" disabled={false} onPress={goToCreateAccount}/>
+      <TouchableOpacity onPress={goToLogin} style={{justifyContent: "center", alignItems:"center"}}>
+        <LoginLink>로그인</LoginLink>
       </TouchableOpacity>
     </AuthLayout>
   )
