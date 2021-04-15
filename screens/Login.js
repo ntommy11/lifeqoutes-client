@@ -1,5 +1,5 @@
 import React from 'react';
-import { View ,Text, TouchableOpacity } from 'react-native';
+import { View ,Text, TouchableOpacity, Alert } from 'react-native';
 import { useRef } from 'react';
 import AuthLayout from '../components/auth/AuthLayout';
 import { TextInput } from '../components/auth/AuthShared';
@@ -37,6 +37,8 @@ export default function Login({route}){
     } = data;
     if(ok){
       await logUserIn(token);
+    }else{
+      Alert.alert("로그인 실패","아이디 또는 비밀번호를 확인해주세요.")
     }
   }
   const [loginMutation, {loading}] = useMutation(LOGIN_MUTATION,{
@@ -80,6 +82,7 @@ export default function Login({route}){
         placeholder="비밀번호"
         placeholderTextColor="gray"
         returnKeyType="done"
+        autoCapitalize={"none"}
         onSubmitEditing={handleSubmit(onValid)}
         onChangeText={(text)=>setValue("password",text)}
       />

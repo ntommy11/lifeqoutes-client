@@ -27,7 +27,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
 `;
 
 export default function CreateAccount({navigation}){
-  const {register, handleSubmit, setValue, getValues} = useForm();
+  const {register, handleSubmit, setValue, getValues, watch} = useForm();
 
   const onCompleted = (data)=>{
     console.log(data);
@@ -86,6 +86,7 @@ export default function CreateAccount({navigation}){
           placeholder="이름"
           placeholderTextColor="gray"
           returnKeyType="next"
+          autoCapitalize={"none"}
           onSubmitEditing={()=>onNext(emailRef)}
           onChangeText={(text)=>setValue("username",text)}
         />
@@ -94,6 +95,7 @@ export default function CreateAccount({navigation}){
           placeholder="이메일"
           placeholderTextColor="gray"
           returnKeyType="next"
+          autoCapitalize={"none"}
           onSubmitEditing={()=>onNext(passwordRef)}
           onChangeText={(text)=>setValue("email",text)}
         />
@@ -102,11 +104,12 @@ export default function CreateAccount({navigation}){
           placeholder="비밀번호"
           placeholderTextColor="gray"
           returnKeyType="next"
+          autoCapitalize={"none"}
           onSubmitEditing={handleSubmit(onValid)}
           lastOne={true}
           onChangeText={(text)=>setValue("password",text)}
         />
-        <AuthButton text="계정 만들기" disabled={false} onPress={handleSubmit(onValid)} />
+        <AuthButton text="계정 만들기" disabled={!watch("email")||!watch("password")||!watch("username")} onPress={handleSubmit(onValid)} />
     </AuthLayout>
   )
 }

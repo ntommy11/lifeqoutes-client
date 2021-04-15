@@ -20,8 +20,10 @@ export const logUserOut = async ()=>{
   isLoggedInVar(false);
   tokenVar(null);
 }
+const SERVER_URI = "http://54.180.106.241:4000/graphql"
+
 const client = new ApolloClient({
-  uri:"https://wisesaying3.azurewebsites.net/graphql",
+  uri:SERVER_URI,
   cache: new InMemoryCache(),
 });
 export default client;
