@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { createContext } from 'react';
 import { useEffect } from 'react';
-import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
 import styled from "styled-components/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -20,7 +20,7 @@ const ss = StyleSheet.create({
     borderRadius: 20,
     maxHeight: 500,
     marginVertical: 30,
-    minHeight: 450,
+    minHeight: 300,
     /*...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -39,11 +39,11 @@ const ss = StyleSheet.create({
   },
   sayingText:colorScheme=>({
     color: `${colorScheme==="dark"?"white":"black"}`,
-    fontSize: 22,
+    fontSize: 18,
   }),
   author: colorScheme=>({
     color: `${colorScheme==="dark"?"#ababab":"#323232"}`	,
-    fontSize: 16,
+    fontSize: 14,
   }),
   comment:{
     marginLeft: 10,
@@ -162,11 +162,9 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
               color:textColor
             }}>{totalComments}</Text>
           </TouchableOpacity>
-          <ScrollView horizontal={true} bounces={true}>
-            {
-              tags.map((item,index)=><Tag key={index} {...item}/>)
-            }
-          </ScrollView>
+          {
+            tags.map((item,index)=><Tag key={index} {...item}/>)
+          }
         </View>
     </View>
   )

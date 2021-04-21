@@ -33,7 +33,7 @@ const TODAY_QUERY = gql`
   }
 `
 
-export default function Today(){
+export default function Today({navigation}){
   const { data, loading, error } = useQuery(TODAY_QUERY,{
     variables:{
       id: 1
@@ -46,16 +46,12 @@ export default function Today(){
     console.log(data);
     return(
       <ScreenLayout>
-        <Text>Today!</Text>
-        <TouchableOpacity onPress={async()=>{await logUserOut()}}>
-          <Text>로그아웃</Text>
-        </TouchableOpacity>
-        <Saying {...data.seeSaying} today={true}/>
+
+        <Saying {...data.seeSaying}/>
       </ScreenLayout>
     )
   }
   return <ScreenLayout>
     <ActivityIndicator color="white"/>
   </ScreenLayout>
-
 }
