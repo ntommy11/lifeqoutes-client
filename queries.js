@@ -44,3 +44,109 @@ export const SEARCH_CONTENT = gql`
     }
   }
 `
+
+// 유저가 작성한 글귀 목록
+export const SEE_USER_CREATE = gql`
+  query seeUserSaying($userId:Int!, $take:Int!, $lastId:Int){
+    seeUserSaying(id:$userId, take:$take, lastId:$lastId){
+      id
+      user{
+        id
+        name
+        email
+      }
+      author{
+        id
+        name
+      }
+      text 
+      tags{
+        id
+        name 
+      }
+      totalLikes
+      totalComments
+      isMine
+      isLike  
+    }
+  }
+`
+// 유저가 찜한 글귀 목록 
+export const SEE_USER_LIKE = gql`
+  query seeUserLike($userId:Int!, $take:Int!, $lastId:Int){
+    seeUserLike(userId:$userId, take:$take, lastId:$lastId){
+      id
+      user{
+        id
+        name
+        email
+      }
+      author{
+        id
+        name
+      }
+      text 
+      tags{
+        id
+        name 
+      }
+      totalLikes
+      totalComments
+      isMine
+      isLike 
+    }
+  }
+`
+
+export const SEE_TAG_SAYING = gql`
+  query seeTagSaying($id: Int!, $take: Int!, $lastId:Int){
+    seeTagSaying(id:$id, take:$take, lastId:$lastId){
+      id
+      user{
+        id
+        name
+        email
+      }
+      author{
+        id
+        name
+      }
+      text 
+      tags{
+        id
+        name 
+      }
+      totalLikes
+      totalComments
+      isMine
+      isLike
+    }
+  }
+
+`
+
+export const SEE_AUTHOR_SAYING = gql`
+  query seeAuthorSaying($id: Int!, $take: Int!, $lastId:Int){
+    seeAuthorSaying(id: $id, take: $take, lastId:$lastId){
+      id
+      user{
+        id
+        name
+        email
+      }
+      author{
+        id
+        name
+      }
+      text 
+      tags{
+        id
+        name 
+      }
+      totalLikes
+      totalComments
+      isMine
+      isLike
+    }
+  }
+`

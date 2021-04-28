@@ -19,6 +19,28 @@ const css = StyleSheet.create({
     flexDirection:"row",
     justifyContent:"space-between"
   }),
+  container: darkmode=>({
+    width:"100%", 
+    flex:1,
+    alignItems:"center",
+    justifyContent:"center",
+    backgroundColor: darkmode?colors.dark:"white",
+  }),
+  header:{
+    width:"100%",
+    alignItems:"center",
+    justifyContent:"center",
+    borderColor:"#dedede",
+    borderBottomWidth:1,
+    flex:1
+  },
+  footer:{
+    width:"100%",
+    flex:1,
+  },
+  itemLeft:{
+    flexDirection:"row", alignItems:"center"
+  }
 
 });
 
@@ -59,32 +81,22 @@ export default function Search({navigation,route}){
   if(data){
     const user = data.seeProfile;
     return(
-      <View   
-        style={{
-          width:"100%", 
-          flex:1,
-          alignItems:"center",
-          justifyContent:"center",
-          backgroundColor: darkmode?colors.dark:"white",
-      }}>
-        <View style={{
-          width:"100%",
-          alignItems:"center",
-          justifyContent:"center",
-          borderColor:"#dedede",
-          borderBottomWidth:1,
-          flex:1
-        }}>
+      <View style={css.container(darkmode)}>
+        <View style={css.header}>
           <Ionicons name="person-circle" color="#dedede" size={72}/>
           <Text style={{color:textColor, fontWeight:"bold", fontSize:20}}>{user.name}</Text>
           <Text style={{color:textColor}}>{user.email}</Text>
         </View>
-        <View style={{
-          width:"100%",
-          flex:1,
-        }}>
-          <TouchableOpacity style={css.itemContainer(darkmode)}>
-            <View style={{flexDirection:"row", alignItems:"center"}}>
+        <View style={css.footer}>
+          <TouchableOpacity 
+            onPress={()=>navigation.navigate("SayingList",{
+              id: Number(user.id),
+              keyword: user.name,
+              type: "userCreate",
+            })}
+            style={css.itemContainer(darkmode)}
+          >
+            <View style={css.itemLeft}>
               <Ionicons name="create" size={20} color={textColor} style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>작성</Text>
             </View>
@@ -98,14 +110,14 @@ export default function Search({navigation,route}){
             })}
             style={css.itemContainer(darkmode)}
           >
-            <View style={{flexDirection:"row", alignItems:"center"}}>
+            <View style={css.itemLeft}>
               <Ionicons name="heart" size={20} color="tomato" style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>찜</Text>
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
           <TouchableOpacity style={css.itemContainer(darkmode)}>
-            <View style={{flexDirection:"row", alignItems:"center"}}>
+            <View style={css.itemLeft}>
               <Ionicons name="star" size={20} color={"orange"} style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>관심 태그</Text>
             </View>

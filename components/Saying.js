@@ -95,7 +95,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
       {
         today?<Today darkmode={darkmode}/>:null 
       }
-      <TouchableOpacity style={ss.body} onPress={()=>navigation.navigate("Saying",{
+      <TouchableOpacity style={ss.body} onPress={()=>navigation.push("Saying",{
         sid: id,
       })}>
         <View style={ss.textWrapper}>
@@ -169,6 +169,7 @@ const ss = StyleSheet.create({
     flex:8,
     justifyContent: "center",
     alignItems: "center",
+    width: "100%"
   },
   sayingText:(colorScheme,fontSize)=>({
     color: `${colorScheme==="dark"?"white":"black"}`,
@@ -218,6 +219,7 @@ const ss = StyleSheet.create({
     alignItems:"center",
     justifyContent:"center",
     paddingVertical: 50, 
-    paddingHorizontal:20
+    paddingHorizontal:20,
+    width:"100%"
   }
 })
