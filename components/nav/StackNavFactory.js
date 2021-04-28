@@ -3,25 +3,34 @@ import React from "react";
 import { Image, useWindowDimensions } from "react-native";
 import Today from "../../screens/Today";
 import Profile from "../../screens/Profile";
+import MyProfile from "../../screens/MyProfile";
 import Search from "../../screens/Search";
 import { useColorScheme } from "react-native-appearance";
-import Saying from "../../screens/Saying";
 import Create from "../../screens/Create";
 import SayingList from "../../screens/SayingList";
+import Saying from "../../screens/Saying";
+import { colors } from "../../colors";
 
 const Stack = createStackNavigator();
 
 export default function StackNavFactory({screenName}){
   const {width, height} = useWindowDimensions();
   const colorScheme = useColorScheme();
-  return <Stack.Navigator headerMode="screen" screenOptions={{
-    headerBackTitleVisible: false,
-    headerTintColor: colorScheme==="dark"?"white":"black",
-    headerStyle:{
-      shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"gray",
-      backgroundColor: colorScheme==="dark"?"black":"white",
-      height: 80,
-    }
+  const darkmode = colorScheme==="dark";
+  return <Stack.Navigator 
+    mode="card" 
+    headerMode="screen" 
+    screenOptions={{
+      headerBackTitleVisible: false,
+      headerTintColor: colorScheme==="dark"?"white":"black",
+      headerStyle:{
+        shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"#dedede",
+        backgroundColor: colorScheme==="dark"?colors.darker:"white",
+        height: 80,
+      },
+      cardStyle:{
+        backgroundColor: darkmode?colors.darker:"white", // <- 중요! 스택 스크린 렌더링 전 기본 배경값 지정. 이걸 안하면 로드 시 처음에 껌뻑거릴 수 있다. 
+      }
   }}>
     {screenName==="Today"?<Stack.Screen name={"Today"} component={Today} options={{
       headerTitle: ()=><Image resizeMode="contain" source={require("../../assets/logo2.png")} style={{
@@ -32,8 +41,8 @@ export default function StackNavFactory({screenName}){
       headerBackTitleVisible: false,
       headerTintColor: colorScheme==="dark"?"white":"black",
       headerStyle:{
-        shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"gray",
-        backgroundColor: colorScheme==="dark"?"black":"white",
+        shadowColor: 'transparent',
+        backgroundColor: colorScheme==="dark"?colors.darker:"white",
         height: 150,
       }
       }}/>:null}
@@ -44,8 +53,9 @@ export default function StackNavFactory({screenName}){
         fontSize: 24
       }
     }}/>:null}
-    {screenName==="Profile"?<Stack.Screen name={"Profile"} component={Profile}/>:null}
-    <Stack.Screen name="Saying" component={Saying} options={{headerShown:false}}/>
+    {screenName==="MyProfile"?<Stack.Screen name={"MyProfile"} component={MyProfile}/>:null}
     <Stack.Screen name="SayingList" component={SayingList}/>
+    <Stack.Screen  name="Saying" component={Saying} options={{headerShown:false}}/>
+    <Stack.Screen name="Profile" component={Profile} />
   </Stack.Navigator>
 }

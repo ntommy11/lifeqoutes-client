@@ -4,10 +4,11 @@ import Today from '../screens/Today';
 import Search from '../screens/Search';
 import Prifile from '../screens/Profile';
 import {Ionicons} from '@expo/vector-icons'
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import StackNavFactory from '../components/nav/StackNavFactory';
 import { useColorScheme } from 'react-native-appearance';
 import Create from '../screens/Create';
+import { colors } from '../colors';
 const Tabs = createBottomTabNavigator()
 
 export default function LoggedInNav(){
@@ -15,10 +16,17 @@ export default function LoggedInNav(){
   return(
     <Tabs.Navigator
       tabBarOptions={{
+        keyboardHidesTabBar: Platform.OS==="ios"?false:true,
         activeTintColor:colorScheme==="dark"?"white":"black",
         style:{
-          borderTopColor:colorScheme==="dark"?"rgba(255,255,255,0.2)":"gray",
-          backgroundColor:colorScheme==="dark"?"black":"white",
+          borderWidth:0,
+          shadowColor:"white",
+          shadowOpacity:0,
+          shadowOffset:{
+            height:0
+          },
+          borderTopColor:colorScheme==="dark"?"rgba(255,255,255,0.2)":"#dedede",
+          backgroundColor:colorScheme==="dark"?colors.darker:"white",
           height: 70,
           paddingTop: 10
         },
@@ -26,7 +34,7 @@ export default function LoggedInNav(){
       }}
     >
       <Tabs.Screen name="Today"  options={{
-        tabBarIcon:({focused,color,size})=><Ionicons name="today" color={color} size={focused?30:30} style={{borderWidth:1, borderColor:"white", width:32}}/>
+        tabBarIcon:({focused,color,size})=><Ionicons name="today" color={color} size={focused?30:30} style={{width:32}}/>
       }}>
         {()=><StackNavFactory screenName="Today"/>}
       </Tabs.Screen>
@@ -41,10 +49,10 @@ export default function LoggedInNav(){
       }}>
         {()=><StackNavFactory screenName="Create"/>}
       </Tabs.Screen>
-      <Tabs.Screen name="Profile"  options={{
+      <Tabs.Screen name="MyProfile"  options={{
         tabBarIcon:({focused,color,size})=><Ionicons name="person" color={color} size={focused?32:30} style={{width:32}}/>
       }}>
-        {()=><StackNavFactory screenName="Profile"/>}
+        {()=><StackNavFactory screenName="MyProfile"/>}
 
       </Tabs.Screen>
 

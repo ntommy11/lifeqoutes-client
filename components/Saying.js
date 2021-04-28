@@ -9,73 +9,24 @@ import { Ionicons } from '@expo/vector-icons';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
+import { colors } from '../colors';
 
 
-const ss = StyleSheet.create({
-  container: colorScheme=>({
-    flex: 1,
-    borderWidth: 1,
-    backgroundColor: colorScheme==="dark"?"rgba(255,255,255,0.1)":"white",
-    width: "85%",
-    borderRadius: 20,
-    maxHeight: 500,
-    marginVertical: 30,
-    minHeight: 450,
-    /*...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width:2, height: -1},
-        shadowOpacity: 0.3,
-      },
-      android:{
-        elevation: 1
-      }
-    }),*/
-  }),
-  body:{
-    flex:8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sayingText:colorScheme=>({
-    color: `${colorScheme==="dark"?"white":"black"}`,
-    fontSize: 22,
-  }),
-  author: colorScheme=>({
-    color: `${colorScheme==="dark"?"#ababab":"#323232"}`	,
-    fontSize: 16,
-  }),
-  comment:{
-    marginLeft: 10,
-    marginRight: 10,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  likes:{
-    borderWidth: 1,
-    borderStyle: "dashed",
-    justifyContent: "center",
-    alignItems: "center"
-  }
-})
 
 function Tag({id, name}){
-  console.log(id, name);
+  //console.log(id, name);
   return (
-    <TouchableOpacity style={{
-      borderWidth: 0,
-      borderRadius: 15,
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      marginLeft: 5,
-      marginBottom: 15,
-      backgroundColor: "#eeeeee",
-      
-    }}>
+    <TouchableOpacity style={ss.tagWrapper}>
       <Text style={{color:"#464646"}}>{name}</Text>
     </TouchableOpacity>
+  )
+}
+
+function Today({darkmode}){
+  return(
+    <View style={ss.today(darkmode)}>
+      <Text style={{ color: darkmode?"#ababab":"#787878"}}>오늘의 한마디</Text>
+    </View>
   )
 }
 
@@ -88,13 +39,30 @@ const TOGGLE_LIKE = gql`
   }
 `
 
-export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments}){
-  console.log("Saying::text=",text);
+
+export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments, today}){
+  // 텍스트 전처리
+  const textlen = text.length;
+  let fontSize = 0;
+  if (textlen < 50){
+    fontSize = 18;
+  }else if(textlen < 100){
+    fontSize = 16;
+  }else{
+    fontSize = 14;
+  }
+  console.log("textlen:",textlen);
+  let sentences = text.split('.');
+  if(sentences[sentences.length-1]=="") sentences.pop();
+  
+  console.log(sentences);
+
+  console.log(id,text);
   const navigation = useNavigation();
   //const {id, user, text, tags, author, isLike, isMine, totalLikes, totalComments} = data.seeSaying;
   //console.log("data:",data)
   const colorScheme = useColorScheme();
-  
+  const darkmode = colorScheme==="dark";
   const textColor = colorScheme==="dark"?"#fff":"#000";
 
 
@@ -124,29 +92,22 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
   });
   return(
     <View style={ss.container(colorScheme)}>
+      {
+        today?<Today darkmode={darkmode}/>:null 
+      }
       <TouchableOpacity style={ss.body} onPress={()=>navigation.navigate("Saying",{
         sid: id,
       })}>
-        <View style={{
-
-          paddingVertical: 30, 
-          paddingHorizontal:20}}>
-          <Text style={ss.sayingText(colorScheme)}>{text}</Text>
+        <View style={ss.textWrapper}>
+          {
+            sentences.map((text,index)=><Text key={index} style={ss.sayingText(colorScheme,fontSize)}>{text.trim()}.{"\n"}</Text>)
+          }
         </View>
-        <TouchableOpacity style={{
-
-        }}>
+        <TouchableOpacity>
           <Text style={ss.author(colorScheme)}>{author.name}</Text>
         </TouchableOpacity>
       </TouchableOpacity>
-      <View style={{
-          borderWidth: 1,
-          borderStyle: "dashed",
-          alignItems:"center",
-          paddingHorizontal: 10,
-          flex: 1,
-          flexDirection: 'row'
-        }}>
+      <View style={ss.footer}>
           <TouchableOpacity style={ss.likes} onPress={toggleLike}>
             <Ionicons 
               name={isLike?"heart":"heart-outline" }
@@ -162,7 +123,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
               color:textColor
             }}>{totalComments}</Text>
           </TouchableOpacity>
-          <ScrollView horizontal={true} bounces={true}>
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} bounces={true}>
             {
               tags.map((item,index)=><Tag key={index} {...item}/>)
             }
@@ -172,25 +133,91 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
   )
 }
 
-/*
-    <Container>
-      <Body>
-        <SayingText>
-          ${text}
-        </SayingText>
-      </Body>
-      <Footer>
-        <Action>
-        </Action>
-        <Action>
-
-        </Action>
-        <Tags>
-
-        </Tags>
-        <User>
-          ${user.username}
-        </User>
-      </Footer>
-    </Container>
-*/
+const ss = StyleSheet.create({
+  container: colorScheme=>({
+    alignItems:"center",
+    justifyContent:"center",
+    flex: 1,
+    borderWidth: 0,
+    borderColor: "#dedede",
+    backgroundColor: colorScheme==="dark"?colors.darker:"white",
+    width: "85%",
+    borderRadius: 20,
+    marginVertical: 30,
+    maxHeight: 600,
+    minHeight: 350,
+    shadowColor:"#000",
+    shadowOffset:{
+      width:1, 
+      height: 2,
+    },
+    shadowOpacity:0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    /*...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width:2, height: -1},
+        shadowOpacity: 0.3,
+      },
+      android:{
+        elevation: 1
+      }
+    }),*/
+  }),
+  body:{
+    flex:8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sayingText:(colorScheme,fontSize)=>({
+    color: `${colorScheme==="dark"?"white":"black"}`,
+    fontSize: fontSize,
+  }),
+  author: colorScheme=>({
+    color: `${colorScheme==="dark"?"#ababab":"#323232"}`	,
+    fontSize: 16,
+  }),
+  comment:{
+    marginLeft: 10,
+    marginRight: 10,
+    borderWidth: 0,
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  likes:{
+    borderWidth: 0,
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  tagWrapper:{
+    borderWidth: 0,
+    borderRadius: 15,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginLeft: 5,
+    marginBottom: 15,
+    backgroundColor: "#eeeeee",
+  },
+  footer:{
+    alignItems:"center",
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    paddingVertical: 10,
+  },
+  today: darkmode =>({
+    borderRadius:15, 
+    backgroundColor: darkmode?"rgba(255,255,255,0.1)":"#efefef",
+    paddingVertical:5, 
+    paddingHorizontal:10, 
+    marginTop:15,
+  }),
+  textWrapper:{
+    alignItems:"center",
+    justifyContent:"center",
+    paddingVertical: 50, 
+    paddingHorizontal:20
+  }
+})

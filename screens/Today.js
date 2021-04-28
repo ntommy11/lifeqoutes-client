@@ -47,7 +47,7 @@ export default function Today({navigation}){
     return(
       <ScreenLayout>
 
-        <Saying {...data.seeSaying}/>
+        <Saying {...data.seeSaying} today={true}/>
       </ScreenLayout>
     )
   }

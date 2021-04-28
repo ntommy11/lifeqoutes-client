@@ -3,6 +3,7 @@ import { Keyboard, Platform, TouchableWithoutFeedback } from "react-native";
 
 export default function DismissKeyboard({children}){
   const dismissKeyboard = ()=>{
+    console.log("keyboard dismiss")
     Keyboard.dismiss();
   }
   return(  

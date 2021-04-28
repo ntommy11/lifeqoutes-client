@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect,useState } from 'react';
-import { Text, View ,TouchableOpacity, TextInput, useWindowDimensions, ActivityIndicator, SafeAreaView,FlatList} from "react-native"
+import { StyleSheet, Text, View ,TouchableOpacity, TextInput, useWindowDimensions, ActivityIndicator, SafeAreaView,FlatList} from "react-native"
 import ScreenLayout from '../components/ScreenLayout';
 import styled from "styled-components/native";
 import DismissKeyboard from '../components/DismissKeyboard';
@@ -13,10 +13,13 @@ import { useQuery } from '@apollo/client';
 import { useNavigation } from '@react-navigation/core';
 import SayingSmall from '../components/SayingSmall';
 import Saying from '../components/Saying';
+import {colors} from '../colors'
 
-const Input = styled.TextInput``;
+// 무한 스크롤 fetch 데이터레코드 수 
+const TAKE = 40;
+const TAG_COLOR = "#91F8D0";
+const TAG_COLOR_DARK = "2E8B57"
 
-const TAKE = 20;
 
 //argument가 백엔드에서 오타남!! keword
 const SEARCH_TAG = gql`
@@ -75,42 +78,24 @@ function SearchTagResult({keyword}){
           keyword: item.name,
           type: "tag",
         })} 
-        style={{
-          borderWidth: 1,
-          borderRadius: 25,
-          paddingHorizontal: 2,
-          paddingVertical: 2,
-          marginHorizontal: 50,
-          marginTop: 5,
-          flex:1,
-          justifyContent:"center",
-          backgroundColor:"rgba(255,255,255,0.15)"
-        }}
+        style={CSS.tagContainer(darkmode)}
       >
         <View style={{
           flexDirection:"row",
           flex:1, 
           justifyContent:"space-between"
         }}>
-          <View style={{
-            flexDirection:"row",
-            paddingLeft: 5,
-            paddingVertical: 5,
-            alignItems:"center"
-          }}> 
+          <View style={CSS.tagLeft}> 
+            <Text style={CSS.tagText}>{item.name}</Text>
             <Text style={{
-              color: darkmode?"rgba(255,255,255,0.7)":"black",
-              fontSize: 18
-            }}>{item.name}</Text>
-            <Text style={{
-              color: "#878787"
+              color: "#dddddd"
             }}> ({item.totalSayings})</Text>
           </View>
           <View>
             <Ionicons 
               name="arrow-forward-circle" 
               size={28} 
-              color={darkmode?"rgba(255,255,255,0.7)":"black"}
+              color="white"
             />
           </View>
         </View>
@@ -142,8 +127,10 @@ function SearchTagResult({keyword}){
       let lastId = data.searchTag[len-1].id;
       console.log("lastId:",lastId);
       return(
-        <SafeAreaView style={{borderWidth:1, width:"100%", flex:1, paddingTop: 20}}>
+        <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
+            keyboardShouldPersistTaps="handled"
+            onEndReachedThreshold={0}
             onEndReached={()=>fetchMore({
             variables:{
               keyword: keyword,
@@ -182,32 +169,14 @@ function SearchAuthorResult({keyword}){
           keyword: item.name,
           type: "author",
         })} 
-        style={{
-          borderWidth: 1,
-          borderRadius: 25,
-          paddingHorizontal: 2,
-          paddingVertical: 2,
-          marginHorizontal: 50,
-          marginTop: 5,
-          flex:1,
-          justifyContent:"center",
-          backgroundColor:"rgba(255,255,255,0.15)"
-      }}>
+        style={CSS.tagContainer(darkmode)}>
         <View style={{
           flexDirection:"row",
           flex:1, 
           justifyContent:"space-between"
         }}>
-          <View style={{
-            flexDirection:"row",
-            paddingLeft: 5,
-            paddingVertical: 5,
-            alignItems:"center"
-          }}> 
-            <Text style={{
-              color: darkmode?"rgba(255,255,255,0.7)":"black",
-              fontSize: 18
-            }}>{item.name}</Text>
+          <View style={CSS.tagLeft}> 
+            <Text style={CSS.tagText}>{item.name}</Text>
             <Text style={{
               color: "#878787"
             }}> ({item.totalSayings})</Text>
@@ -216,7 +185,7 @@ function SearchAuthorResult({keyword}){
             <Ionicons 
               name="arrow-forward-circle" 
               size={28} 
-              color={darkmode?"rgba(255,255,255,0.7)":"black"}
+              color="white"
             />
           </View>
         </View>
@@ -246,8 +215,10 @@ function SearchAuthorResult({keyword}){
     if(len){
       let lastId = data.searchAuthor[len-1].id;
       return(
-        <SafeAreaView style={{borderWidth:1, width:"100%", flex:1, paddingTop: 20}}>
+        <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
+            keyboardShouldPersistTaps="handled"
+            onEndReachedThreshold={0}
             onEndReached={()=>fetchMore({
             variables:{
               keyword: keyword,
@@ -305,8 +276,10 @@ function SearchContentResult({keyword}){
       let lastId = data.searchSaying[len-1].id;
       console.log("lastId:",lastId);
       return(
-        <SafeAreaView style={{borderWidth:1, width:"100%", flex:1, paddingTop: 20}}>
+        <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
+            keyboardShouldPersistTaps="handled"
+            onEndReachedThreshold={0}
             onEndReached={()=>fetchMore({
             variables:{
               keyword: keyword,
@@ -330,8 +303,8 @@ function SearchContentResult({keyword}){
 }
 
 function Result({selection, keyword, darkmode}){
-  if(selection=="tag") return <SearchTagResult keyword={keyword} darkmode={darkmode}/>
-  else if(selection=="author") return <SearchAuthorResult keyword={keyword} darkmode={darkmode}/>
+  if(selection=="tag") return <ScreenLayout><SearchTagResult keyword={keyword} darkmode={darkmode}/></ScreenLayout>
+  else if(selection=="author") return <ScreenLayout><SearchAuthorResult keyword={keyword} darkmode={darkmode}/></ScreenLayout>
   else if(selection=="content") return <SearchContentResult keyword={keyword} darkmode={darkmode}/>
   return <ActivityIndicator/>
 }
@@ -350,76 +323,59 @@ export default function Search({navigation}){
   //query
   console.log("selection:",selection);
   const SearchBox = () => (
-    <View style={{
-      flex:1,
-      width:width*0.8,
-      height:height/5,
-      borderColor:"black",
-      borderWidth:1,
-      alignItems:"center",
-      justifyContent:"center",
-    }}>      
+    <View style={CSS.searchBoxContainer}>      
       <SwitchSelector 
         options={options}
         initial={0}
         onPress={value=>setSelection(value)}
-        style={{
-          width:width/2,
-          borderWidth:1,
-        }}
+        style={{width:width/2}}
+        hasPadding={true}
         height={30}
-        backgroundColor= {darkmode?"rgba(255,255,255,0.2)":"#ededed"}
-        selectedColor={darkmode?"black":"#fefefe"}
-        textColor="#bdbdbd"
-        buttonColor={darkmode?"rgba(255,255,255,0.8)":"black"}
+        borderColor={colors.blue}
+        borderWidth={1}
+        backgroundColor= {darkmode?"transparent":"white"}
+        selectedColor={"#fefefe"}
+        textColor={darkmode?"#ababab":"#bdbdbd"}
+        buttonColor={colors.blue}
         bold={true}
         borderRadius={30}
       />
       <View style={{
         flexDirection:"row",
         justifyContent:"center",
-        borderWidth:1
+        alignItems:"center",
+        marginTop: 10,
+        paddingHorizontal: 3,
+        paddingVertical: 5,
+        width:width*0.8,
+        borderRadius: 10,
+        backgroundColor:darkmode?"rgba(255,255,255,0.1)":colors.skin
       }}>
+        <Ionicons name="search" size={28} color="#ababab"/>
         <TextInput 
           style={{
-            backgroundColor:darkmode?"rgba(255,255,255,0.3)":"#fefefe", 
-            borderWidth:1, 
-            width:"80%", 
+            borderWidth:0, 
             fontSize:18,
             paddingHorizontal: 5,
             paddingVertical: 7,
             borderRadius: 9,
-            marginTop: 10,
+            width: "90%",
             color: darkmode?"white":"black"
           }} 
-          placeholderTextColor={darkmode?"rgba(255,255,255,0.5)":"#dedede"} 
+          placeholderTextColor={darkmode?"rgba(255,255,255,0.5)":"#ababab"} 
           placeholder="Search"
           autoCaptialize="none"      
           returnKeyType="search"
           autoCorrect={false}
           onChangeText={(text)=>setValue("keyword", text)}
         />
-        <TouchableOpacity style={{
-          borderWidth:1,
-          marginTop: 10,
-          marginLeft: 10,
-          paddingVertical: 5,
-          paddingHorizontal: 7,
-          alignItems:"center",
-          justifyContent:"center",
-        }}>
-          <Text style={{
-            color:darkmode?"white":"black", 
-            fontWeight:"700",
-            fontSize: 18
-          }}>검색</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
   useEffect(()=>{
     navigation.setOptions({
-      headerTitle: SearchBox
+      headerTitle: SearchBox,
+
     });
     register("keyword");
   },[]);
@@ -432,10 +388,41 @@ export default function Search({navigation}){
         flex:1, 
         alignItems:"center",
         justifyContent: "center",
-        borderWidth:1, 
       }}>
         <Result keyword={watch("keyword")?watch("keyword"):""} selection={selection} darkmode={darkmode}/>
       </View>     
     </DismissKeyboard>
   )
 }
+
+const CSS = StyleSheet.create({
+  tagContainer:darkmode=>({
+    borderRadius: 25,
+    paddingHorizontal: 2,
+    paddingVertical: 2,
+    marginHorizontal: 50,
+    marginTop: 5,
+    flex:1,
+    justifyContent:"center",
+    backgroundColor:darkmode?"rgba(255,255,255,0.1)":"#74D19D",
+  }),
+  tagLeft:{
+    flexDirection:"row",
+    paddingLeft: 10,
+    paddingVertical: 5,
+    alignItems:"center"
+  },
+  tagText:{
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold"
+  },
+  searchBoxContainer:{
+    flex:1,
+    width:"100%",
+    borderColor:"black",
+    borderWidth:0,
+    alignItems:"center",
+    justifyContent:"center",
+  }
+})

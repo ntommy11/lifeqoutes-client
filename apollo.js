@@ -1,6 +1,8 @@
-import { ApolloClient, createHttpLink, InMemoryCache, makeVar } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache, makeVar, ApolloLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { relayStylePagination } from '@apollo/client/utilities';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { onError } from 'apollo-link-error'
 
 const TOKEN = "token"
 
@@ -22,6 +24,16 @@ export const logUserOut = async()=>{
   tokenVar(null);
 }
 
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log('graphQLErrors', graphQLErrors);
+  }
+  if (networkError) {
+    console.log('networkError', networkError);
+  }
+});
+
+
 const httpLink = createHttpLink({
   uri:"http://54.180.106.241:4000/graphql",
 });
@@ -35,8 +47,10 @@ const authLink = setContext((_,{headers})=>{
   }
 });
 
+const link = ApolloLink.from([authLink,errorLink,httpLink]);
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: link,//authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies:{
       Query:{
@@ -57,9 +71,22 @@ const client = new ApolloClient({
               return [...existing, ...incoming];
             }
           }, 
+          seeTagSaying:{
+            keyArgs:["id"],
+            merge(existing=[], incoming){
+              return [...existing, ...incoming];
+            }
+          },
+          seeAuthorSaying:{
+            keyArgs:["id"],
+            merge(existing=[], incoming){
+              return [...existing, ...incoming];
+            }      
+          }
         }
       }
     }
+  
   }),
 });
 export default client;
