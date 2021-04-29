@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { createContext } from 'react';
 import { useEffect } from 'react';
-import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform, ScrollView, LogBox } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
 import styled from "styled-components/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,9 @@ import { useMutation } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../colors';
 
-
+LogBox.ignoreAllLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 function Tag({id, name}){
   //console.log(id, name);
@@ -25,7 +27,7 @@ function Tag({id, name}){
 function Today({darkmode}){
   return(
     <View style={ss.today(darkmode)}>
-      <Text style={{ color: darkmode?"#ababab":"#787878"}}>오늘의 한마디</Text>
+      <Text style={{ color: darkmode?"#ababab":"#787878"}}>오늘의 말</Text>
     </View>
   )
 }
@@ -40,7 +42,8 @@ const TOGGLE_LIKE = gql`
 `
 
 
-export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments, today}){
+export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments, today, refresh}){
+  console.log(refresh);
   // 텍스트 전처리
   const textlen = text.length;
   let fontSize = 0;
@@ -97,6 +100,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
       }
       <TouchableOpacity style={ss.body} onPress={()=>navigation.push("Saying",{
         sid: id,
+        refresh,
       })}>
         <View style={ss.textWrapper}>
           {

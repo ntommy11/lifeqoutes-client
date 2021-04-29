@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { Cache, useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
-import { Text, View ,TouchableOpacity, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, SafeAreaView, FlatList, KeyboardAvoidingView, Alert, ActivityIndicator, Platform} from "react-native"
+import { Text, View ,TouchableOpacity, StyleSheet, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard, SafeAreaView, FlatList, KeyboardAvoidingView, Alert, ActivityIndicator, Platform, LogBox} from "react-native"
 import { useColorScheme } from 'react-native-appearance';
 import ScreenLayout from '../components/ScreenLayout';
 import {Ionicons} from '@expo/vector-icons';
@@ -11,7 +11,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useNavigation } from '@react-navigation/core';
 import { stripIgnoredCharacters } from 'graphql';
 import { colors } from '../colors';
+import {SEE_USER_CREATE} from '../queries';
 
+LogBox.ignoreAllLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 const BUTTON_COLOR = "#0A82FF"
 
 const SEE_SAYING = gql`
@@ -90,11 +94,17 @@ const DELETE_SAYING = gql`
   }
 `
 
-function DeleteSayingButton({id}){
+function DeleteSayingButton({id,refreshParent}){
   console.log(id, typeof(id));
   const nav = useNavigation();
-  const onCompleted = (data)=>console.log(data);
-  const [deleteSaying] = useMutation(DELETE_SAYING,{onCompleted})
+  const onCompleted = (data)=>{
+    console.log(data);
+    refreshParent();
+    nav.navigate("MyProfile");
+  };
+  const [deleteSaying] = useMutation(DELETE_SAYING,{
+    onCompleted,
+  })
   return(
     <TouchableOpacity 
       onPress={()=>Alert.alert(
@@ -109,7 +119,6 @@ function DeleteSayingButton({id}){
                   id:id,
                 },
               });
-              nav.goBack(); 
             },
             style: "cancel"
           },
@@ -239,7 +248,7 @@ function Info({totalLikes, totalComments, isLike, textColor,tags, id}){
   )
 }
 
-function Header({id,refetch}){
+function Header({id,refetch,refreshParent}){
   const navigation = useNavigation();
   const dismissKeyboard = ()=>{Keyboard.dismiss();}
   const colorScheme = useColorScheme();
@@ -251,7 +260,8 @@ function Header({id,refetch}){
     }
   });
   if(data){
-    const {id,text,user,author,tags,totalLikes, totalComments,isLike, isMine} = data.seeSaying;
+    if(data==null) return <ScreenLayout><ActivityIndicator/></ScreenLayout>
+    const {id,text,user,author,tags,totalLikes, totalComments,isLike, isMine} = data?.seeSaying;
     // 텍스트 전처리
     const textlen = text.length;
     let fontSize = 0;
@@ -272,7 +282,7 @@ function Header({id,refetch}){
             <View style={{width: "100%", flexDirection:"row", justifyContent:"space-between"}}>
               <TouchableOpacity onPress={()=>navigation.goBack()} style={{minHeight:18, width:32, marginLeft:10, marginTop:20}}><Ionicons name="arrow-back" color={textColor} size={32}/></TouchableOpacity>
               {isMine?
-                <DeleteSayingButton id={id}/>
+                <DeleteSayingButton id={id} refreshParent={refreshParent}/>
                 :
                 null
               }
@@ -363,7 +373,7 @@ function RenderComment({item, refetch, id}){
             onPress={()=>navigation.navigate("Profile",{ // 유저 프로필 스크린으로 네이게이션
               id: user.id, // 유저 아이디, 이름, 이메일을 route.props로 전달 
               name: user.name,
-              email: user.email 
+              email: user.email
             })}
             style={ss.username}>
             <Text style={{color:textColor, fontSize:18, fontWeight:"bold"}}>
@@ -418,6 +428,7 @@ function RenderComment({item, refetch, id}){
 
 
 export default function Saying({navigation, route}){
+  console.log(route);
   const dismissKeyboard = ()=>{
     console.log("keyboard dismiss")
     Keyboard.dismiss();
@@ -476,7 +487,7 @@ export default function Saying({navigation, route}){
           keyboardShouldPersistTaps="handled"
           refreshing={refreshing}
           onRefresh={refresh}
-          ListHeaderComponent={<Header id={id} refetch={refetch}/>}
+          ListHeaderComponent={<Header id={id} refetch={refetch} refreshParent={route.params.refresh}/>}
           data={data.seeSayingComment}
           renderItem={renderItem}
           keyExtractor={item=>item.id.toString()}

@@ -4,6 +4,19 @@ import { relayStylePagination } from '@apollo/client/utilities';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { onError } from 'apollo-link-error'
 
+
+const deduplicate = (array)=>{
+  let unique__ref = [];
+  let res = [];
+  array.forEach((obj)=>{
+    if(!unique__ref.includes(obj.__ref)){
+      unique__ref.push(obj.__ref);
+      res.push(obj);
+    }
+  });
+  return res;
+}
+
 const TOKEN = "token"
 
 export const isLoggedInVar = makeVar(false);
@@ -74,14 +87,28 @@ const client = new ApolloClient({
           seeTagSaying:{
             keyArgs:["id"],
             merge(existing=[], incoming){
-              return [...existing, ...incoming];
+              return deduplicate([...existing, ...incoming]);
             }
           },
           seeAuthorSaying:{
             keyArgs:["id"],
             merge(existing=[], incoming){
-              return [...existing, ...incoming];
+              return deduplicate([...existing, ...incoming]);
             }      
+          },
+          seeUserSaying:{
+            keyArgs:["id"],
+            merge(existing=[], incoming){
+              console.log("existing:",existing);
+              console.log('incoming:',incoming);
+              return deduplicate([...existing, ...incoming]);
+            }      
+          },
+          seeUserLike:{
+            keyArgs:["id"],
+            merge(existing=[], incoming){
+              return deduplicate([...existing, ...incoming]);
+            }     
           }
         }
       }

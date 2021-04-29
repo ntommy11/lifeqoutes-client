@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, LogBox, SafeAreaView, Text, View } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
 import Saying from '../components/Saying';
 import ScreenLayout from '../components/ScreenLayout';
@@ -10,6 +10,9 @@ import {colors} from '../colors'
 import { SEE_USER_CREATE, SEE_USER_LIKE, SEE_TAG_SAYING, SEE_AUTHOR_SAYING} from '../queries'
 const TAKE = 10
 
+LogBox.ignoreAllLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 function SayingByUserCreate({userId}){
   console.log("userId=",userId);
@@ -17,7 +20,7 @@ function SayingByUserCreate({userId}){
     //console.log("item:",item);
     return(
       <ScreenLayout>
-        <Saying {...item}/>
+        <Saying {...item} refresh={refresh}/>
       </ScreenLayout> 
     )
   }
@@ -85,7 +88,7 @@ function SayingsByUserLike({userId}){
     //console.log("item:",item);
     return(
       <ScreenLayout>
-        <Saying {...item}/>
+        <Saying {...item} refresh={refresh}/>
       </ScreenLayout> 
     )
   }
@@ -152,7 +155,7 @@ function SayingsByTag({id}){
     //console.log("item:",item);
     return(
       <ScreenLayout>
-        <Saying {...item}/>
+        <Saying {...item} refresh={refresh}/>
       </ScreenLayout> 
     )
   }
@@ -218,7 +221,7 @@ function SayingsByAuthor({id}){
     //console.log("item:",item);
     return(
       <ScreenLayout>
-        <Saying {...item}/>
+        <Saying {...item} refresh={refresh}/>
       </ScreenLayout> 
     )
   }

@@ -197,7 +197,7 @@ export default function Create({navigation}){
 
   const onValid = (data)=>{
     if(data.text.length<5){
-      Alert.length("내용을 5자 이상 입력해주세요");
+      Alert.alert("내용을 5자 이상 입력해주세요");
       return;
     }
     if(tags.length==0){
