@@ -53,7 +53,13 @@ const SEE_PROFILE = gql`
       createdAt,
       bio,
       avatar,
-
+      tags{
+        id
+        name 
+        isFollowing 
+      }
+      totalSayings
+      totalLikes
     }
   }
 `
@@ -80,6 +86,7 @@ export default function Search({navigation,route}){
 
   if(data){
     const user = data.seeProfile;
+    console.log("user:",user);
     return(
       <View style={css.container(darkmode)}>
         <View style={css.header}>
@@ -99,6 +106,7 @@ export default function Search({navigation,route}){
             <View style={css.itemLeft}>
               <Ionicons name="create" size={20} color={textColor} style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>작성</Text>
+              <Text style={{color:"#ababab", fontSize:16}}> {user.totalSayings}</Text>
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
@@ -113,6 +121,8 @@ export default function Search({navigation,route}){
             <View style={css.itemLeft}>
               <Ionicons name="heart" size={20} color="tomato" style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>찜</Text>
+              <Text style={{color:"#ababab", fontSize:16}}> {user.totalLikes}</Text>
+
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>

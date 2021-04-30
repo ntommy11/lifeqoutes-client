@@ -110,7 +110,9 @@ export default function Search({navigation}){
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
-          <TouchableOpacity style={css.itemContainer(darkmode)}>
+          <TouchableOpacity 
+            onPress={()=>navigation.navigate("EditTags")}
+            style={css.itemContainer(darkmode)}>
             <View style={css.itemLeft}>
               <Ionicons name="star" size={20} color={"orange"} style={{marginRight:5}}/>
               <Text style={{color:textColor, fontSize:20}}>관심 태그</Text>

@@ -10,6 +10,7 @@ import Create from "../../screens/Create";
 import SayingList from "../../screens/SayingList";
 import Saying from "../../screens/Saying";
 import { colors } from "../../colors";
+import EditTags from "../../screens/EditTags";
 
 const Stack = createStackNavigator();
 
@@ -57,5 +58,12 @@ export default function StackNavFactory({screenName}){
     <Stack.Screen name="SayingList" component={SayingList}/>
     <Stack.Screen  name="Saying" component={Saying} options={{headerShown:false}}/>
     <Stack.Screen name="Profile" component={Profile} />
+    <Stack.Screen name="EditTags" component={EditTags} options={{
+      headerStyle:{
+        shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"#dedede",
+        backgroundColor: colorScheme==="dark"?colors.darker:"white",
+        height: 150,
+      }
+    }}/>
   </Stack.Navigator>
 }

@@ -73,7 +73,7 @@ const client = new ApolloClient({
             keyArgs:["keword"],
             merge(existing=[], incoming){
               console.log("incoming:",incoming);
-              return [...existing, ...incoming];
+              return deduplicate([...existing, ...incoming]);
             }
           },
           searchAuthor:{

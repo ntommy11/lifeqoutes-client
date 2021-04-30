@@ -7,6 +7,7 @@ export const SEARCH_TAG = gql`
       id
       name
       totalSayings
+      isFollowing
     }
   }
 `
@@ -149,4 +150,23 @@ export const SEE_AUTHOR_SAYING = gql`
       isLike
     }
   }
+`
+
+export const LIKE_TAG = gql`
+  mutation likeTag($id:Int!){
+    likeTag(id:$id){
+      ok
+      error
+    }
+  }
+`
+
+export const UNLIKE_TAG = gql`
+mutation unlikeTag($id:Int!){
+  unlikeTag(id:$id){
+    ok
+    error
+  }
+}
+
 `
