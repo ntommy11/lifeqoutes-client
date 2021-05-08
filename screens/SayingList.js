@@ -8,7 +8,8 @@ import Saying from '../components/Saying';
 import ScreenLayout from '../components/ScreenLayout';
 import {colors} from '../colors'
 import { SEE_USER_CREATE, SEE_USER_LIKE, SEE_TAG_SAYING, SEE_AUTHOR_SAYING} from '../queries'
-const TAKE = 10
+import { useIsFocused } from '@react-navigation/core';
+const TAKE = 5
 
 LogBox.ignoreAllLogs([
   'Non-serializable values were found in the navigation state',
@@ -36,6 +37,10 @@ function SayingByUserCreate({userId}){
       take: TAKE
     }
   });
+  useEffect(()=>{
+    refetch();
+    Alert.alert("refetched!");
+  },[]);
   if(error){
     console.log(error);
   }
@@ -98,6 +103,7 @@ function SayingsByUserLike({userId}){
     await refetch();
     setRefreshing(false);
   }
+
   const {data,loading,error,refetch,fetchMore} = useQuery(SEE_USER_LIKE,{
     variables:{
       userId: userId,
@@ -165,6 +171,7 @@ function SayingsByTag({id}){
     await refetch();
     setRefreshing(false);
   }
+
   const {data,loading,error,refetch,fetchMore} = useQuery(SEE_TAG_SAYING,{
     variables:{
       id: id,
@@ -231,6 +238,8 @@ function SayingsByAuthor({id}){
     await refetch();
     setRefreshing(false);
   }
+
+
   const {data,loading,error,refetch,fetchMore} = useQuery(SEE_AUTHOR_SAYING,{
     variables:{
       id: id,
@@ -277,11 +286,13 @@ function SayingsByAuthor({id}){
 
 
 export default function SayingList({navigation, route}){
+  const isFocused = useIsFocused();
   const {id, keyword, type} = route.params;
   console.log(id,keyword,type);
   const colorScheme = useColorScheme();
   const darkmode = colorScheme==="dark";
   useEffect(()=>{
+
     navigation.setOptions({
       title: keyword,
       headerStyle:{
@@ -289,33 +300,39 @@ export default function SayingList({navigation, route}){
         backgroundColor: darkmode?colors.darker:"white",
       }
     });
-  });
+    const unsubscribe = navigation.addL
+  },[navigation]);
   //console.log(navigation, id,keyword,type);
-  switch(type){
-    case "userCreate": return(
-      <ScreenLayout>
-        <SayingByUserCreate userId={id}/>
-      </ScreenLayout>
-    ); break;
-    case "userLike": return(
-      <ScreenLayout>
-        <SayingsByUserLike userId={id} />
-      </ScreenLayout>
-    ); break;
-    case "tag": return(
-      <ScreenLayout>
-        <SayingsByTag id={id}/>
-      </ScreenLayout>
-    ); break;
-    case "author": return(
-      <ScreenLayout>
-        <SayingsByAuthor id={id}/>
-      </ScreenLayout>
-    ); break;
-    default: return(
-      <ScreenLayout>
-        <ActivityIndicator/>
-      </ScreenLayout>
-    )
+  if(isFocused){
+    switch(type){
+      case "userCreate": return(
+        <ScreenLayout>
+          <SayingByUserCreate userId={id}/>
+        </ScreenLayout>
+      ); break;
+      case "userLike": return(
+        <ScreenLayout>
+          <SayingsByUserLike userId={id} />
+        </ScreenLayout>
+      ); break;
+      case "tag": return(
+        <ScreenLayout>
+          <SayingsByTag id={id}/>
+        </ScreenLayout>
+      ); break;
+      case "author": return(
+        <ScreenLayout>
+          <SayingsByAuthor id={id}/>
+        </ScreenLayout>
+      ); break;
+      default: return(
+        <ScreenLayout>
+          <ActivityIndicator/>
+        </ScreenLayout>
+      )
+    }
+  }
+  else{
+    return <View></View>
   }
 }

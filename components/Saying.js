@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { createContext } from 'react';
 import { useEffect } from 'react';
-import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform, ScrollView, LogBox } from 'react-native';
+import { Image, Text, useWindowDimensions, View, StyleSheet,TouchableOpacity, Platform, ScrollView, LogBox, Alert } from 'react-native';
 import { useColorScheme } from 'react-native-appearance';
 import styled from "styled-components/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -40,10 +40,66 @@ const TOGGLE_LIKE = gql`
     }
   }
 `
+const DELETE_SAYING = gql`
+  mutation deleteSaying($id:Int!){
+    deleteSaying(id:$id){
+      ok
+      error
+    }
+  }
+`
 
+function DeleteSayingButton({id}){
+  console.log(id, typeof(id));
+  const nav = useNavigation();
+  const onCompleted = (data)=>{
+    console.log(data);
+  };
+  const [deleteSaying] = useMutation(DELETE_SAYING,{
+    onCompleted,
+    update:(cache,result)=>{
+      console.log(result);
+      const {data:{deleteSaying:{ok}}} = result;
+      if(ok){
+        cache.evict({
+          id:`Saying:${id}`
+        });
+      }
+    }
+  })
+  return(
+    <TouchableOpacity 
+      onPress={()=>Alert.alert(
+        "글귀를 삭제하시겠습니까?",
+        "",
+        [
+          {
+            text: "예",
+            onPress: ()=>{
+              deleteSaying({
+                variables: {
+                  id:id,
+                },
+              });
+            },
+            style: "cancel"
+          },
+          {
+            text: "아니오",
+          }
+        ],
+        {
+          cancelable: true,
+        }
+      )}
+      style={{minHeight:18, borderColor:"white",width:32,marginTop:20}}>
+      <Ionicons name="trash-outline" color="tomato" size={32}/>
+    </TouchableOpacity>
+  )
+}
 
 export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments, today, refresh}){
-  console.log(refresh);
+  //console.log(refresh);
   // 텍스트 전처리
   const textlen = text.length;
   let fontSize = 0;
@@ -54,11 +110,11 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
   }else{
     fontSize = 14;
   }
-  console.log("textlen:",textlen);
+  //console.log("textlen:",textlen);
   let sentences = text.split('.');
   if(sentences[sentences.length-1]=="") sentences.pop();
   
-  console.log(sentences);
+  //console.log(sentences);
 
   console.log(id,text);
   const navigation = useNavigation();
@@ -98,9 +154,9 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
       {
         today?<Today darkmode={darkmode}/>:null 
       }
+      {/*isMine && <DeleteSayingButton id={id}/>*/}
       <TouchableOpacity style={ss.body} onPress={()=>navigation.push("Saying",{
         sid: id,
-        refresh,
       })}>
         <View style={ss.textWrapper}>
           {

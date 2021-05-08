@@ -132,6 +132,7 @@ function SearchTagResult({keyword}){
       return <View></View>
     }
   } 
+  return <View></View>
 }
 
 export default function EditTags({navigation}){

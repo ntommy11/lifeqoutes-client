@@ -94,16 +94,24 @@ const DELETE_SAYING = gql`
   }
 `
 
-function DeleteSayingButton({id,refreshParent}){
+function DeleteSayingButton({id}){
   console.log(id, typeof(id));
   const nav = useNavigation();
   const onCompleted = (data)=>{
     console.log(data);
-    refreshParent();
-    nav.navigate("MyProfile");
   };
   const [deleteSaying] = useMutation(DELETE_SAYING,{
     onCompleted,
+    update:(cache,result)=>{
+      console.log(result);
+      const {data:{deleteSaying:{ok}}} = result;
+      if(ok){
+        nav.goBack();
+        cache.evict({
+          id:`Saying:${id}`
+        });
+      }
+    }
   })
   return(
     <TouchableOpacity 
@@ -248,7 +256,7 @@ function Info({totalLikes, totalComments, isLike, textColor,tags, id}){
   )
 }
 
-function Header({id,refetch,refreshParent}){
+function Header({id,refetch}){
   const navigation = useNavigation();
   const dismissKeyboard = ()=>{Keyboard.dismiss();}
   const colorScheme = useColorScheme();
@@ -259,8 +267,10 @@ function Header({id,refetch,refreshParent}){
       id: id,
     }
   });
+
+
   if(data){
-    if(data==null) return <ScreenLayout><ActivityIndicator/></ScreenLayout>
+    try{
     const {id,text,user,author,tags,totalLikes, totalComments,isLike, isMine} = data?.seeSaying;
     // 텍스트 전처리
     const textlen = text.length;
@@ -282,7 +292,7 @@ function Header({id,refetch,refreshParent}){
             <View style={{width: "100%", flexDirection:"row", justifyContent:"space-between"}}>
               <TouchableOpacity onPress={()=>navigation.goBack()} style={{minHeight:18, width:32, marginLeft:10, marginTop:20}}><Ionicons name="arrow-back" color={textColor} size={32}/></TouchableOpacity>
               {isMine?
-                <DeleteSayingButton id={id} refreshParent={refreshParent}/>
+                <DeleteSayingButton id={id}/>
                 :
                 null
               }
@@ -309,7 +319,10 @@ function Header({id,refetch,refreshParent}){
             <Form id={id} darkmode={darkmode} textColor={textColor} refetch={refetch}/>
           </View>
       </TouchableWithoutFeedback>
-    )
+    )}
+    catch(e){
+      console.log(e);
+    }
   }
   if(error){
     console.log(error);
@@ -487,7 +500,7 @@ export default function Saying({navigation, route}){
           keyboardShouldPersistTaps="handled"
           refreshing={refreshing}
           onRefresh={refresh}
-          ListHeaderComponent={<Header id={id} refetch={refetch} refreshParent={route.params.refresh}/>}
+          ListHeaderComponent={<Header id={id} refetch={refetch}/>}
           data={data.seeSayingComment}
           renderItem={renderItem}
           keyExtractor={item=>item.id.toString()}
