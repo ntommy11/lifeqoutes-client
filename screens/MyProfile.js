@@ -53,6 +53,11 @@ const SEE_MY_PROFILE = gql`
       createdAt,
       bio,
       avatar,
+      totalSayings,
+      totalLikes,
+      tags{
+        id
+      }
     }
   }
 `
@@ -92,7 +97,7 @@ export default function Search({navigation}){
           >
             <View style={css.itemLeft}>
               <Ionicons name="create" size={20} color={textColor} style={{marginRight:5}}/>
-              <Text style={{color:textColor, fontSize:20}}>작성</Text>
+              <Text style={{color:textColor, fontSize:20}}>작성 {user.totalSayings}</Text>
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
@@ -106,7 +111,7 @@ export default function Search({navigation}){
           >
             <View style={css.itemLeft}>
               <Ionicons name="heart" size={20} color="tomato" style={{marginRight:5}}/>
-              <Text style={{color:textColor, fontSize:20}}>찜</Text>
+              <Text style={{color:textColor, fontSize:20}}>찜 {user.totalLikes}</Text>
             </View>
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>

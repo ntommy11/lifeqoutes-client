@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/core';
 import { stripIgnoredCharacters } from 'graphql';
 import { colors } from '../colors';
 import {SEE_USER_CREATE} from '../queries';
+import useUser from '../hooks/useUser';
 
 LogBox.ignoreAllLogs([
   'Non-serializable values were found in the navigation state',
@@ -94,15 +95,20 @@ const DELETE_SAYING = gql`
   }
 `
 
-function DeleteSayingButton({id}){
+function DeleteSayingButton({id, setDeleted}){
+  const { id:userId } = useUser();
+  console.log("userID:",userId);
   console.log(id, typeof(id));
   const nav = useNavigation();
   const onCompleted = (data)=>{
     console.log(data);
+    console.log("delete:onCompleted");
+    setDeleted(true);
   };
   const [deleteSaying] = useMutation(DELETE_SAYING,{
     onCompleted,
     update:(cache,result)=>{
+      console.log("delete:update")
       console.log(result);
       const {data:{deleteSaying:{ok}}} = result;
       if(ok){
@@ -110,6 +116,14 @@ function DeleteSayingButton({id}){
         cache.evict({
           id:`Saying:${id}`
         });
+        cache.modify({
+          id: `User:${userId}`,
+          fields:{
+            totalSayings(prev){
+              return prev-1;
+            }
+          }
+        })
       }
     }
   })
@@ -257,6 +271,7 @@ function Info({totalLikes, totalComments, isLike, textColor,tags, id}){
 }
 
 function Header({id,refetch}){
+  const [deleted, setDeleted] = useState(false);
   const navigation = useNavigation();
   const dismissKeyboard = ()=>{Keyboard.dismiss();}
   const colorScheme = useColorScheme();
@@ -268,6 +283,9 @@ function Header({id,refetch}){
     }
   });
 
+  if(deleted){
+    return <View></View>
+  }
 
   if(data){
     try{
@@ -292,7 +310,7 @@ function Header({id,refetch}){
             <View style={{width: "100%", flexDirection:"row", justifyContent:"space-between"}}>
               <TouchableOpacity onPress={()=>navigation.goBack()} style={{minHeight:18, width:32, marginLeft:10, marginTop:20}}><Ionicons name="arrow-back" color={textColor} size={32}/></TouchableOpacity>
               {isMine?
-                <DeleteSayingButton id={id}/>
+                <DeleteSayingButton id={id} setDeleted={setDeleted}/>
                 :
                 null
               }

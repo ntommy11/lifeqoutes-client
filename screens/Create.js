@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import AuthLayout from '../components/auth/AuthLayout';
 import { SEARCH_AUTHOR, SEARCH_TAG } from '../queries';
 import { useIsFocused } from '@react-navigation/core';
+import useUser from '../hooks/useUser';
 
 const BUTTON_COLOR = "#0A82FF"
 
@@ -174,6 +175,7 @@ function Subtitle({textColor,iconName,text}){
 }
 
 export default function Create({navigation}){
+  const {id:userId} = useUser();
   const {register, handleSubmit, setValue, getValues, watch} = useForm();
   const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
@@ -231,6 +233,20 @@ export default function Create({navigation}){
   }
   const [uploadSayingMutation, {loading}] = useMutation(UPLOAD_SAYING,{
     onCompleted,
+    update:(cache, res)=>{
+      const {data:{uploadSaying:{id}}} = res;
+      console.log("res=",res);
+      console.log("uploadSaying ok?",id);
+      if(!id) return;
+      cache.modify({
+        id:`User:${userId}`,
+        fields:{
+          totalSayings(prev){
+            return prev+1;
+          }
+        }
+      })
+    }
   })
 
   const dismissKeyboard = ()=>{

@@ -1,6 +1,25 @@
 import gql from 'graphql-tag';
 
 
+export const SEE_MY_PROFILE = gql`
+  query seeMyProfile{
+    seeMyProfile{
+      id,
+      name,
+      email,
+      createdAt,
+      bio,
+      avatar,
+      totalSayings,
+      totalLikes,
+      tags{
+        id
+      }
+    }
+  }
+`
+
+
 export const SEARCH_TAG = gql`
   query searchTag($keyword: String!, $take: Int!, $lastId:Int){
     searchTag(keword: $keyword, take: $take, lastId:$lastId){
