@@ -111,7 +111,7 @@ function SearchTagResult({keyword}){
     errorPolicy:"all"
   });
   if(error){
-    console.log(error);
+    //console.log(error);
   }
   if(loading){
     return (
@@ -121,11 +121,11 @@ function SearchTagResult({keyword}){
     )     
   }
   if(data){
-    console.log("SearchTagResult::data=",data);
+    //console.log("SearchTagResult::data=",data);
     let len = data.searchTag.length;
     if(len){
       let lastId = data.searchTag[len-1].id;
-      console.log("lastId:",lastId);
+      //console.log("lastId:",lastId);
       return(
         <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
@@ -210,7 +210,7 @@ function SearchAuthorResult({keyword}){
     )     
   }
   if(data){
-    console.log("SearchAuthorResult::data=",data);
+    //console.log("SearchAuthorResult::data=",data);
     let len = data.searchAuthor.length;
     if(len){
       let lastId = data.searchAuthor[len-1].id;
@@ -260,7 +260,7 @@ function SearchContentResult({keyword}){
     errorPolicy:"all"
   });
   if(error){
-    console.log(error);
+    //console.log(error);
   }
   if(loading){
     return (
@@ -270,11 +270,11 @@ function SearchContentResult({keyword}){
     )     
   }
   if(data){
-    console.log("SearchTagResult::data=",data);
+    //console.log("SearchTagResult::data=",data);
     let len = data.searchSaying.length;
     if(len){
       let lastId = data.searchSaying[len-1].id;
-      console.log("lastId:",lastId);
+      //console.log("lastId:",lastId);
       return(
         <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
@@ -321,7 +321,7 @@ export default function Search({navigation}){
   ];
   
   //query
-  console.log("selection:",selection);
+  //console.log("selection:",selection);
   const SearchBox = () => (
     <View style={CSS.searchBoxContainer}>      
       <SwitchSelector 
@@ -380,7 +380,7 @@ export default function Search({navigation}){
     register("keyword");
   },[]);
 
-  console.log(watch());
+  //console.log(watch());
   return(
     <DismissKeyboard>
       <View style={{

@@ -13,7 +13,7 @@ export const SEE_MY_PROFILE = gql`
 
 function useUser(){
   const {data} = useQuery(SEE_MY_PROFILE);
-  return {...data.seeMyProfile};
+  return {...data?.seeMyProfile};
 }
 
 export default useUser;

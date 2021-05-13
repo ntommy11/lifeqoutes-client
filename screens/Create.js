@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ScrollView, Text, View ,TouchableOpacity, TextInput, TouchableWithoutFeedback,KeyboardAvoidingView, Keyboard, Alert,StyleSheet } from "react-native"
 import { useColorScheme } from 'react-native-appearance';
 import { Ionicons } from '@expo/vector-icons';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -29,7 +29,7 @@ const UPLOAD_SAYING = gql`
   }
 `
 function Tag({name,tags,setTags}){
-  console.log(name);
+  //console.log(name);
   return (
     <TouchableOpacity 
       onPress={()=>{
@@ -62,7 +62,7 @@ function RecommendTags({keyword,setValue,addTag}){
     console.log()
   }
   if(data){
-    console.log(data);
+    //console.log(data);
     return(
       <ScrollView
         showsHorizontalScrollIndicator={false}
@@ -114,10 +114,10 @@ function RecommendAuthor({keyword,setValue, darkmode}){
   if(isCompleted) return null;
 
   if(error){
-    console.log()
+    //console.log()
   }
   if(data){
-    console.log(data);
+    //console.log(data);
     return(
       <ScrollView
         showsHorizontalScrollIndicator={false}
@@ -187,7 +187,7 @@ export default function Create({navigation}){
 
 
   const onCompleted = (data)=>{
-    console.log(data);
+    //console.log(data);
     const {uploadSaying:{id}} = data; // UNZIP result data
     if(id){
       Alert.alert("업로드 성공!");
@@ -206,7 +206,7 @@ export default function Create({navigation}){
       Alert.alert("태그를 하나 이상 추가해주세요!");
       return;
     }
-    console.log("data:",data);
+    //console.log("data:",data);
     if(!loading){
       uploadSayingMutation({
         variables:{
@@ -226,17 +226,17 @@ export default function Create({navigation}){
       return;
     } 
     
-    console.log(tag);
+    //console.log(tag);
     setTags(old=>[...old,tag]);
-    console.log("tags:",tags);
+    //console.log("tags:",tags);
     setValue("tag","");
   }
   const [uploadSayingMutation, {loading}] = useMutation(UPLOAD_SAYING,{
     onCompleted,
     update:(cache, res)=>{
       const {data:{uploadSaying:{id}}} = res;
-      console.log("res=",res);
-      console.log("uploadSaying ok?",id);
+      //console.log("res=",res);
+      //console.log("uploadSaying ok?",id);
       if(!id) return;
       cache.modify({
         id:`User:${userId}`,
@@ -250,7 +250,7 @@ export default function Create({navigation}){
   })
 
   const dismissKeyboard = ()=>{
-    console.log("keyboard dismiss");
+    //console.log("keyboard dismiss");
     Keyboard.dismiss();
   }
 
@@ -264,8 +264,13 @@ export default function Create({navigation}){
     register("author",{
       required: true,
     });
+    navigation.addListener('focus',()=>{
+      setValue("tag","");
+      setValue("author","");
+      setTags([]);
+    })
   },[register])
-  console.log(watch());
+  //console.log(watch());
   if(isFocused){
     return(
       <TouchableWithoutFeedback style={{ flex: 1 }} onPress={dismissKeyboard} disabled={Platform.OS==="web"}>
@@ -298,7 +303,7 @@ export default function Create({navigation}){
               onChangeText={(text)=>setValue("text",text)}
               style={css.textInput(textColor,darkmode)}  
             />
-            <Subtitle textColor={textColor} iconName="person-add" text="작자"/>
+            <Subtitle textColor={textColor} iconName="person-add" text="작자/출처"/>
             <View style={{
               flex:1,
               flexDirection: 'row'

@@ -39,7 +39,7 @@ function SayingByUserCreate({userId}){
   });
   useEffect(()=>{
     refetch();
-    Alert.alert("refetched!");
+    //Alert.alert("refetched!");
   },[]);
   if(error){
     console.log(error);
@@ -300,7 +300,6 @@ export default function SayingList({navigation, route}){
         backgroundColor: darkmode?colors.darker:"white",
       }
     });
-    const unsubscribe = navigation.addL
   },[navigation]);
   //console.log(navigation, id,keyword,type);
   if(isFocused){
