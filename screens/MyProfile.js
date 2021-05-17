@@ -78,6 +78,7 @@ export default function Search({navigation}){
   },[]);
 
   if(data){
+    console.log(data);
     const user = data.seeMyProfile;
     return(
       <View style={css.container(darkmode)}>

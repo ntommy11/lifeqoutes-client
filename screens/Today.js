@@ -9,8 +9,8 @@ import ScreenLayout from '../components/ScreenLayout';
 
 
 const TODAY_QUERY = gql`
-  query seeSaying($id:Int!){
-    seeSaying(id:$id){
+  query {
+    seeSaying{
       id
       text 
       user{
@@ -34,11 +34,7 @@ const TODAY_QUERY = gql`
 `
 
 export default function Today({navigation}){
-  const { data, loading, error } = useQuery(TODAY_QUERY,{
-    variables:{
-      id: 1
-    }
-  });
+  const { data, loading, error } = useQuery(TODAY_QUERY);
   if(error){
     console.log(error);
   }
@@ -53,5 +49,6 @@ export default function Today({navigation}){
   }
   return <ScreenLayout>
     <ActivityIndicator color="white"/>
+    <TouchableOpacity onPress={()=>logUserOut()}><Text>logout</Text></TouchableOpacity>
   </ScreenLayout>
 }

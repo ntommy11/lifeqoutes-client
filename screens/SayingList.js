@@ -302,36 +302,33 @@ export default function SayingList({navigation, route}){
     });
   },[navigation]);
   //console.log(navigation, id,keyword,type);
-  if(isFocused){
-    switch(type){
-      case "userCreate": return(
-        <ScreenLayout>
-          <SayingByUserCreate userId={id}/>
-        </ScreenLayout>
-      ); break;
-      case "userLike": return(
-        <ScreenLayout>
-          <SayingsByUserLike userId={id} />
-        </ScreenLayout>
-      ); break;
-      case "tag": return(
-        <ScreenLayout>
-          <SayingsByTag id={id}/>
-        </ScreenLayout>
-      ); break;
-      case "author": return(
-        <ScreenLayout>
-          <SayingsByAuthor id={id}/>
-        </ScreenLayout>
-      ); break;
-      default: return(
-        <ScreenLayout>
-          <ActivityIndicator/>
-        </ScreenLayout>
-      )
-    }
+
+  switch(type){
+    case "userCreate": return(
+      <ScreenLayout>
+        <SayingByUserCreate userId={id}/>
+      </ScreenLayout>
+    ); break;
+    case "userLike": return(
+      <ScreenLayout>
+        <SayingsByUserLike userId={id} />
+      </ScreenLayout>
+    ); break;
+    case "tag": return(
+      <ScreenLayout>
+        <SayingsByTag id={id}/>
+      </ScreenLayout>
+    ); break;
+    case "author": return(
+      <ScreenLayout>
+        <SayingsByAuthor id={id}/>
+      </ScreenLayout>
+    ); break;
+    default: return(
+      <ScreenLayout>
+        <ActivityIndicator/>
+      </ScreenLayout>
+    )
   }
-  else{
-    return <View></View>
-  }
+  
 }

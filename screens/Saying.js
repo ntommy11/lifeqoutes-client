@@ -375,6 +375,9 @@ function RenderComment({item, refetch, id}){
         update: (cache, {data:{deleteComment:ok}})=>{
           if(ok){
             const target = `Saying:${id}`; // 여기서 id는 Saying의 id임
+            cache.evict({
+              id: `Comment:${item.id}`,
+            })
             cache.modify({
               id: target,
               fields:{

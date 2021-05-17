@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { Image, useWindowDimensions } from "react-native";
+import { Image, Text, useWindowDimensions } from "react-native";
 import Today from "../../screens/Today";
 import Profile from "../../screens/Profile";
 import MyProfile from "../../screens/MyProfile";
@@ -34,9 +34,7 @@ export default function StackNavFactory({screenName}){
       }
   }}>
     {screenName==="Today"?<Stack.Screen name={"Today"} component={Today} options={{
-      headerTitle: ()=><Image resizeMode="contain" source={require("../../assets/logo2.png")} style={{
-        maxHeight: 30,
-      }}/>
+      headerTitle: ()=><Text style={{color: "white", fontWeight: "bold", fontSize: 24}}>인생글귀</Text>
     }}/>:null}
     {screenName==="Search"?<Stack.Screen name={"Search"} component={Search} options={{
       headerBackTitleVisible: false,

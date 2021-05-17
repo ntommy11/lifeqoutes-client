@@ -96,7 +96,7 @@ export default function Search({navigation,route}){
         </View>
         <View style={css.footer}>
           <TouchableOpacity 
-            onPress={()=>navigation.navigate("SayingList",{
+            onPress={()=>navigation.push("SayingList",{
               id: Number(user.id),
               keyword: user.name,
               type: "userCreate",
@@ -111,7 +111,7 @@ export default function Search({navigation,route}){
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={()=>navigation.navigate("SayingList",{
+            onPress={()=>navigation.push("SayingList",{
               id: Number(user.id),
               keyword: user.name,
               type: "userLike",
