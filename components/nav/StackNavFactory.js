@@ -11,6 +11,7 @@ import SayingList from "../../screens/SayingList";
 import Saying from "../../screens/Saying";
 import { colors } from "../../colors";
 import EditTags from "../../screens/EditTags";
+import Setting from "../../screens/Setting";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,7 @@ export default function StackNavFactory({screenName}){
       }
     }}/>:null}
     {screenName==="MyProfile"?<Stack.Screen name={"MyProfile"} component={MyProfile}/>:null}
+    {screenName==="Setting"?<Stack.Screen name={"Setting"} component={Setting}/>:null}
     <Stack.Screen name="SayingList" component={SayingList}/>
     <Stack.Screen  name="Saying" component={Saying} options={{headerShown:false}}/>
     <Stack.Screen name="Profile" component={Profile} />

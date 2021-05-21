@@ -55,7 +55,12 @@ export default function LoggedInNav(){
         {()=><StackNavFactory screenName="MyProfile"/>}
 
       </Tabs.Screen>
+      <Tabs.Screen name="Setting"  options={{
+        tabBarIcon:({focused,color,size})=><Ionicons name="settings" color={color} size={focused?32:30} style={{width:32}}/>
+      }}>
+        {()=><StackNavFactory screenName="Setting"/>}
 
+      </Tabs.Screen>
     </Tabs.Navigator>
   )
 }

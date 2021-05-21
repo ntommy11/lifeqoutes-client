@@ -10,7 +10,7 @@ import ScreenLayout from '../components/ScreenLayout';
 
 const TODAY_QUERY = gql`
   query {
-    seeSaying{
+    seeFeed{
       id
       text 
       user{
@@ -43,7 +43,7 @@ export default function Today({navigation}){
     return(
       <ScreenLayout>
 
-        <Saying {...data.seeSaying} today={true}/>
+        <Saying {...data.seeFeed} today={true}/>
       </ScreenLayout>
     )
   }
