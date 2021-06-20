@@ -5,7 +5,7 @@ import {colors} from '../colors'
 
 export default function ScreenLayout({loading, children}){
   const colorScheme = useColorScheme();
-  console.log(colorScheme)
+  //console.log(colorScheme)
   return <View style={{
     backgroundColor:colorScheme==="dark"?colors.dark:colors.skin, 
     flex:1, 

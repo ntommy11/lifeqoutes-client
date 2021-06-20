@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "131811796709",
+    "project_id": "wisesaying-a5e55",
+    "storage_bucket": "wisesaying-a5e55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131811796709:android:bfd1756ab1771f3fa1960c",
+        "android_client_info": {
+          "package_name": "com.ntommy.wisesaying"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131811796709-hnnc3ihoibfnj5a0vijntoe05irm289f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwBZZzR4Wk4zgVk6SZx7Uz43ERdFa039s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131811796709-hnnc3ihoibfnj5a0vijntoe05irm289f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

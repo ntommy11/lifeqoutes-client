@@ -116,7 +116,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
   
   //console.log(sentences);
 
-  console.log(id,text);
+  //console.log(id,text);
   const navigation = useNavigation();
   //const {id, user, text, tags, author, isLike, isMine, totalLikes, totalComments} = data.seeSaying;
   //console.log("data:",data)

@@ -9,10 +9,68 @@ import StackNavFactory from '../components/nav/StackNavFactory';
 import { useColorScheme } from 'react-native-appearance';
 import Create from '../screens/Create';
 import { colors } from '../colors';
+import { gql, useMutation, useReactiveVar } from '@apollo/client';
+import { pushTokenVar } from '../apollo';
 const Tabs = createBottomTabNavigator()
 
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import useUser from '../hooks/useUser';
+import { isEmpty } from '../utils';
+
+const REGISTER_TOKEN = gql`
+  mutation registerToken($id:Int!, $token:String!){
+    registerToken(id:$id, token:$token){
+      ok
+      error 
+    }
+  }
+`
+
 export default function LoggedInNav(){
+  const pushToken = useReactiveVar(pushTokenVar);
+  const user = useUser();
+  console.log("pushTokenVar:",pushToken);
+  console.log("typeof pushTokenVar:",typeof(pushToken));
+  console.log("LoggedInNav::User=",user);
   const colorScheme = useColorScheme();
+
+  const [registerToken] = useMutation(REGISTER_TOKEN,{
+    onCompleted: (data)=>{
+      console.log("registerToken onCompleted:",data);
+    }
+  });
+
+  React.useEffect(()=>{
+    if(!isEmpty(user)){
+      if(pushToken.length===0){
+        registerForPushNotification().then(token=>{
+          console.log("pushToken: ", token);
+          pushTokenVar(token);
+          registerToken({
+            variables:{
+              id: Number(user.id),
+              token: token,
+            }
+          })
+        }).catch(err=>console.log(err));
+      }
+    }
+  },[user]);
+
+  async function registerForPushNotification(){
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    if(status != 'granted'){
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    }
+    if(status!='granted'){
+      Alert.alert("failed to get the push token");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    return token;
+  }
+
   return(
     <Tabs.Navigator
       tabBarOptions={{

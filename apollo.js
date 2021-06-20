@@ -72,7 +72,7 @@ const client = new ApolloClient({
             //keyArgs:false,
             keyArgs:["keword"],
             merge(existing=[], incoming){
-              console.log("incoming:",incoming);
+              //console.log("incoming:",incoming);
               return deduplicate([...existing, ...incoming]);
             }
           },
@@ -80,7 +80,7 @@ const client = new ApolloClient({
             //keyArgs:false,
             keyArgs:["keyword"],
             merge(existing=[], incoming){
-              console.log("incoming:",incoming);
+              //console.log("incoming:",incoming);
               return [...existing, ...incoming];
             }
           }, 
@@ -99,8 +99,8 @@ const client = new ApolloClient({
           seeUserSaying:{
             keyArgs:["id"],
             merge(existing=[], incoming){
-              console.log("existing:",existing);
-              console.log('incoming:',incoming);
+              //console.log("existing:",existing);
+              //console.log('incoming:',incoming);
               return deduplicate([...existing, ...incoming]);
             }      
           },

@@ -13,7 +13,7 @@ import ScreenLayout from '../components/ScreenLayout';
 
 const TAKE = 50;
 
-function Tag({id,isFollowing,name}){
+function Tag({id,isFollowing,name,totalSayings}){
   const [likeTag] = useMutation(LIKE_TAG,{
     variables:{
       id,
@@ -58,13 +58,16 @@ function Tag({id,isFollowing,name}){
       onPress={isFollowing?unlikeTag:likeTag}
       style={
         {
-          paddingVertical:5,
+          flexDirection:"row",
+          paddingVertical:3,
           paddingHorizontal:10,
           borderRadius: 25,
           borderWidth:isFollowing?2:1,
           borderColor: isFollowing?"tomato":"#898989",
           marginHorizontal: 5,
           marginVertical: 5,
+          justifyContent: "center",
+          alignItems:"center",
         }
     }>
       <Text style={
@@ -74,6 +77,10 @@ function Tag({id,isFollowing,name}){
           color:isFollowing?"tomato":"#898989",
         }
       }>{name}</Text>
+      <Text style={{
+        fontSize: 14,
+        color:isFollowing?"tomato":"#898989",
+      }}> {totalSayings}</Text>
     </TouchableOpacity>
   )
 

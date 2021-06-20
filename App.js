@@ -1,6 +1,6 @@
 import AppLoading from 'expo-app-loading';
 import React, { useState,useEffect } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
@@ -16,31 +16,13 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
+import { isEmpty } from './utils';
+import useUser from './hooks/useUser';
 
 export default function App() {
-  useEffect(()=>{
-    registerForPushNotification().then(token=>{
-      console.log("pushToken: ", token);
-      pushTokenVar(token);
-    }).catch(err=>console.log(err));
-  },[])
-
-  async function registerForPushNotification(){
-    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-    if(status != 'granted'){
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    }
-    if(status!='granted'){
-      Alert.alert("failed to get the push token");
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    return token;
-  }
   const [loading, setLoading] = useState(true);
   const onFinish = () => setLoading(false);
   const isLoggedIn = useReactiveVar(isLoggedInVar);
-  const pushToken = useReactiveVar(pushTokenVar);
   const preloadAssets = ()=>{
     // 폰트 로딩
     const fontsToLoad = [Ionicons.font]
@@ -96,6 +78,7 @@ export default function App() {
     </ApolloProvider>
   );
 
+
 }
 
 const styles = StyleSheet.create({
@@ -107,14 +90,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const TASK = "setNotif";
-
-TaskManager.defineTask(TASK,()=>{
-  try{
-    const receivedNewData = "new data";
-    console.log(new Data);
-    return receivedNewData? BackgroundFetch.Result.NewData : BackgroundFetch.Result.NoData;
-  }catch(error){
-    return BackgroundFetch.Result.Failed;
-  }
-})
