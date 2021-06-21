@@ -1,9 +1,9 @@
 import React, { useEffect,useState } from 'react';
-import { Text, View ,TouchableOpacity, ActivityIndicator, StyleSheet} from "react-native"
+import { Text, View ,TouchableOpacity, ActivityIndicator, StyleSheet, Alert} from "react-native"
 import ScreenLayout from '../components/ScreenLayout';
 import { logUserOut } from '../apollo';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {Ionicons} from '@expo/vector-icons';
 import { useColorScheme } from 'react-native-appearance';
 import { colors } from '../colors';
@@ -62,6 +62,14 @@ const SEE_MY_PROFILE = gql`
     }
   }
 `
+const LOGOUT = gql`
+  mutation logout{
+    logout{
+      ok
+      error 
+    }
+  }
+`
 
 export default function Search({navigation}){
 
@@ -71,7 +79,12 @@ export default function Search({navigation}){
   const textColor = darkmode?"white":"black";
 
   const {data, loading, error} = useQuery(SEE_MY_PROFILE);
-
+  const [logoutMutation] = useMutation(LOGOUT,{
+    onCompleted:(data)=>{
+      console.log(data);
+      Alert.alert("로그아웃");
+    }
+  });
   const [value, setValue] = useState("");
 
   useEffect(()=>{
@@ -129,7 +142,10 @@ export default function Search({navigation}){
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={{marginBottom:10}} onPress={()=>logUserOut()}>
+        <TouchableOpacity style={{marginBottom:10}} onPress={()=>{
+          logoutMutation();
+          logUserOut();
+        }}>
           <Text style={{color:"tomato"}}>로그아웃</Text>
         </TouchableOpacity>
       </View>
