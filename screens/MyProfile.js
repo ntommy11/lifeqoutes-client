@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { Text, View ,TouchableOpacity, ActivityIndicator, StyleSheet} from "react-native"
 import ScreenLayout from '../components/ScreenLayout';
 import { logUserOut } from '../apollo';
@@ -7,7 +7,8 @@ import { useQuery } from '@apollo/client';
 import {Ionicons} from '@expo/vector-icons';
 import { useColorScheme } from 'react-native-appearance';
 import { colors } from '../colors';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {Picker} from '@react-native-picker/picker';
 
 const css = StyleSheet.create({
   itemContainer: darkmode=>({
@@ -71,6 +72,8 @@ export default function Search({navigation}){
 
   const {data, loading, error} = useQuery(SEE_MY_PROFILE);
 
+  const [value, setValue] = useState("");
+
   useEffect(()=>{
     navigation.setOptions({
       title: "내 프로필"
@@ -126,8 +129,8 @@ export default function Search({navigation}){
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={()=>logUserOut()}>
-          <Text style={{color:"white"}}>Log out</Text>
+        <TouchableOpacity style={{marginBottom:10}} onPress={()=>logUserOut()}>
+          <Text style={{color:"tomato"}}>로그아웃</Text>
         </TouchableOpacity>
       </View>
     )

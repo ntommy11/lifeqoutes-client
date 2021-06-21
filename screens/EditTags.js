@@ -78,7 +78,7 @@ function Tag({id,isFollowing,name,totalSayings}){
         }
       }>{name}</Text>
       <Text style={{
-        fontSize: 14,
+        fontSize: 10,
         color:isFollowing?"tomato":"#898989",
       }}> {totalSayings}</Text>
     </TouchableOpacity>
