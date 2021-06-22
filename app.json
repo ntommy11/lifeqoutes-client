@@ -34,7 +34,10 @@
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
-      "versionCode":1
+      "versionCode":1,
+      "config":{
+        "googleMobileAdsAppId": "ca-app-pub-9250217630003485~4080322337"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

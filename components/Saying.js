@@ -10,6 +10,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../colors';
+import useUser from '../hooks/useUser';
 
 LogBox.ignoreAllLogs([
   'Non-serializable values were found in the navigation state',
@@ -49,7 +50,7 @@ const DELETE_SAYING = gql`
   }
 `
 
-function DeleteSayingButton({id}){
+function DeleteSayingButton({id,uid}){
   console.log(id, typeof(id));
   const nav = useNavigation();
   const onCompleted = (data)=>{
@@ -64,6 +65,14 @@ function DeleteSayingButton({id}){
         cache.evict({
           id:`Saying:${id}`
         });
+        cache.modify({
+          id: `User:${uid}`,
+          fields:{
+            totalSayings(prev){
+              return prev-1;
+            }
+          }
+        })
       }
     }
   })
@@ -101,14 +110,20 @@ function DeleteSayingButton({id}){
 export default function Saying({id, user, text, tags, author, isLike, isMine, totalLikes, totalComments, today, refresh}){
   //console.log(refresh);
   // 텍스트 전처리
+  const {id:uid} = useUser();
   const textlen = text.length;
+  //console.log(textlen);
   let fontSize = 0;
   if (textlen < 50){
     fontSize = 18;
   }else if(textlen < 100){
     fontSize = 16;
-  }else{
+  }else if(textlen < 150){
     fontSize = 14;
+  }else if(textlen < 200){
+    fontSize = 12;
+  }else{
+    fontSize = 10;
   }
   //console.log("textlen:",textlen);
   let sentences = text.split('.');
@@ -132,6 +147,15 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
     update: (cache, { data:{toggleLike:{ok}}})=>{
       console.log("ok=",ok);
       if(ok){
+        cache.modify({
+          id: `User:${uid}`,
+          fields:{
+            totalLikes(prev){
+              if(isLike) return prev-1;
+              else return prev+1;
+            }
+          }
+        });
         const target = `Saying:${id}`; // 수정할 대상을 지정
         cache.modify({
           id: target,
@@ -145,6 +169,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
             },
           },
         });
+
       }
     },
     onCompleted:(data)=>console.log(data),
@@ -154,7 +179,7 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
       {
         today?<Today darkmode={darkmode}/>:null 
       }
-      {/*isMine && <DeleteSayingButton id={id}/>*/}
+      {/*isMine && <DeleteSayingButton id={id} uid={user.id}/>*/}
       <TouchableOpacity style={ss.body} onPress={()=>navigation.push("Saying",{
         sid: id,
       })}>
@@ -177,7 +202,9 @@ export default function Saying({id, user, text, tags, author, isLike, isMine, to
               color:textColor
             }}>{totalLikes}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={ss.comment}>
+          <TouchableOpacity style={ss.comment} onPress={()=>navigation.push("Saying",{
+            sid: id,
+          })}>
             <Ionicons name="chatbox-outline" size={30} color={textColor}/>
             <Text style={{
               color:textColor
@@ -200,12 +227,12 @@ const ss = StyleSheet.create({
     flex: 1,
     borderWidth: 0,
     borderColor: "#dedede",
-    backgroundColor: colorScheme==="dark"?colors.darker:"white",
+    backgroundColor: colorScheme==="dark"?"black":"white",
     width: "85%",
     borderRadius: 20,
-    marginVertical: 30,
-    maxHeight: 600,
-    minHeight: 350,
+    marginVertical: 15,
+    maxHeight: 800,
+    minHeight: 450,
     shadowColor:"#000",
     shadowOffset:{
       width:1, 

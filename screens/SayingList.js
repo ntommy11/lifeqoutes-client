@@ -104,17 +104,21 @@ function SayingsByUserLike({userId}){
     setRefreshing(false);
   }
 
+  useEffect(()=>{
+    refetch();
+  },[]);
+
   const {data,loading,error,refetch,fetchMore} = useQuery(SEE_USER_LIKE,{
     variables:{
       userId: userId,
-      take: TAKE
+      take: 500
     }
   });
   if(error){
     console.log(error);
   }
   if(data){
-    //console.log("SayingsByTag::data=",data);
+    console.log("SayingsByTag::data=",data);
     let len = data.seeUserLike.length;
     if(len){
       let lastId = data.seeUserLike[len-1].id;
@@ -186,6 +190,7 @@ function SayingsByTag({id}){
     let len = data.seeTagSaying.length;
     if(len){
       let lastId = data.seeTagSaying[len-1].id;
+      console.log("lastId:",lastId);
       return(
         <SafeAreaView style={{flex:1,width:"100%"}}>
           <FlatList
@@ -292,9 +297,8 @@ export default function SayingList({navigation, route}){
   const colorScheme = useColorScheme();
   const darkmode = colorScheme==="dark";
   useEffect(()=>{
-
     navigation.setOptions({
-      title: keyword,
+      title: type==="userLike"&&keyword!=="내가 찜한 말"?`${keyword}님이 찜한 말`:keyword,
       headerStyle:{
         shadowColor:'transparent',
         backgroundColor: darkmode?colors.darker:"white",
@@ -310,6 +314,11 @@ export default function SayingList({navigation, route}){
       </ScreenLayout>
     ); break;
     case "userLike": return(
+      <ScreenLayout>
+        <SayingsByUserLike userId={id} />
+      </ScreenLayout>
+    ); break;
+    case "myLike": return(
       <ScreenLayout>
         <SayingsByUserLike userId={id} />
       </ScreenLayout>

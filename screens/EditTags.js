@@ -68,6 +68,7 @@ function Tag({id,isFollowing,name,totalSayings}){
           marginVertical: 5,
           justifyContent: "center",
           alignItems:"center",
+          backgroundColor:"#efefef"
         }
     }>
       <Text style={
@@ -106,17 +107,17 @@ function SearchTagResult({keyword}){
     )     
   }
   if(data){
-    console.log("SearchTagResult::data=",data);
+    //console.log("SearchTagResult::data=",data);
     let len = data.searchTag.length;
     if(len){
       let lastId = data.searchTag[len-1].id;
-      console.log("lastId:",lastId);
+      //console.log("lastId:",lastId);
       return(
         <ScrollView contentContainerStyle={{justifyContent:"center",alignItems:"center"}}>
           <View style={{marginVertical:10}}>
             <Text style={{color:"#454545", fontWeight:"700"}}>관심있는 태그를 터치하세요</Text>
           </View>
-          <SafeAreaView style={{width:"100%", flex:1, flexDirection:"row", flexWrap:"wrap", paddingHorizontal:10,}}>
+          <SafeAreaView style={{width:"100%", flex:1, flexDirection:"row", flexWrap:"wrap", paddingHorizontal:10, justifyContent:"center"}}>
             {
               data.searchTag.map((item,index)=><Tag key={index} {...item}/>)
             }
@@ -145,12 +146,10 @@ function SearchTagResult({keyword}){
 export default function EditTags({navigation}){
   const {width, height} = useWindowDimensions();
   const {setValue, register ,watch} = useForm();
-  const [selection, setSelection] = useState("tag");
   const colorScheme = useColorScheme();
   const darkmode = colorScheme==="dark";
-  
   //query
-  console.log("selection:",selection);
+  //console.log("selection:",selection);
   const SearchBox = () => (
     <View style={CSS.searchBoxContainer}>      
       <View style={{
@@ -180,6 +179,7 @@ export default function EditTags({navigation}){
           autoCaptialize="none"      
           returnKeyType="search"
           autoCorrect={false}
+          value={watch("keyword")}
           onChangeText={(text)=>setValue("keyword", text)}
         />
       </View>

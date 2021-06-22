@@ -83,7 +83,7 @@ export default function Search({navigation}){
     onCompleted:(data)=>{
       console.log(data);
       Alert.alert("로그아웃");
-    }
+    },
   });
   const [value, setValue] = useState("");
 
@@ -105,7 +105,7 @@ export default function Search({navigation}){
         </View>
         <View style={css.footer}>
           <TouchableOpacity 
-            onPress={()=>navigation.navigate("SayingList",{
+            onPress={()=>navigation.push("SayingList",{
               id: Number(user.id),
               keyword: "내가 작성한 말",
               type: "userCreate",
@@ -119,10 +119,10 @@ export default function Search({navigation}){
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={()=>navigation.navigate("SayingList",{
+            onPress={()=>navigation.push("SayingList",{
               id: Number(user.id),
               keyword: "내가 찜한 말",
-              type: "userLike",
+              type: "myLike",
             })}
             style={css.itemContainer(darkmode)}
           >
@@ -143,7 +143,15 @@ export default function Search({navigation}){
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={{marginBottom:10}} onPress={()=>{
-          logoutMutation();
+          logoutMutation({
+            update:(cache,{data:{logout:ok}})=>{
+              if(ok){
+                cache.evict({
+                  id:`User:${user.id}`
+                })
+              }
+            }
+          });
           logUserOut();
         }}>
           <Text style={{color:"tomato"}}>로그아웃</Text>

@@ -85,6 +85,7 @@ export default function Login({route}){
         autoCapitalize={"none"}
         onSubmitEditing={handleSubmit(onValid)}
         onChangeText={(text)=>setValue("password",text)}
+        secureTextEntry={true}
       />
       <AuthButton 
         text="Log in" 

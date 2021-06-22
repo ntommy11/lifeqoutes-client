@@ -198,6 +198,7 @@ export default function Create({navigation}){
   }
 
   const onValid = (data)=>{
+    console.log(data);
     if(data.text.length<5){
       Alert.alert("내용을 5자 이상 입력해주세요");
       return;
@@ -211,12 +212,20 @@ export default function Create({navigation}){
       uploadSayingMutation({
         variables:{
           text:data.text,
-          author:data.author,
+          author:data.author===""?"작자미상":data.author,
           tag:tags
         }
       })
     }
 
+  }
+
+  const onError = (errors)=>{
+    console.log(errors);
+    const {author, text} = errors;
+    if(text.ref.value===""){
+      Alert.alert("내용을 입력하세요");
+    }
   }
 
   const addTag = ()=>{
@@ -262,9 +271,10 @@ export default function Create({navigation}){
       required:false,
     });
     register("author",{
-      required: true,
+      required: false,
     });
     navigation.addListener('focus',()=>{
+      setValue("text","");
       setValue("tag","");
       setValue("author","");
       setTags([]);
@@ -325,7 +335,7 @@ export default function Create({navigation}){
                 <Text style={{
                   color: bySelf?textColor:"#ababab",
                   fontSize: 20
-                }}>본인</Text>
+                }}>미상</Text>
               </TouchableOpacity>
             </View>
             <RecommendAuthor keyword={watch("author")} setValue={setValue} darkmode={darkmode}/>
@@ -368,7 +378,7 @@ export default function Create({navigation}){
                 }
               </ScrollView>
             <TouchableOpacity 
-              onPress={handleSubmit(onValid)}
+              onPress={handleSubmit(onValid,onError)}
               style={css.submitButton}
             >
               <Text style={{color:"white", fontSize:18, fontWeight:"bold"}}>완료</Text>

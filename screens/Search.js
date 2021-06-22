@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect,useState } from 'react';
-import { StyleSheet, Text, View ,TouchableOpacity, TextInput, useWindowDimensions, ActivityIndicator, SafeAreaView,FlatList} from "react-native"
+import { StyleSheet, Text, View ,TouchableOpacity, TextInput, useWindowDimensions, ActivityIndicator, SafeAreaView,FlatList, Alert} from "react-native"
 import ScreenLayout from '../components/ScreenLayout';
 import styled from "styled-components/native";
 import DismissKeyboard from '../components/DismissKeyboard';
@@ -71,6 +71,7 @@ function SearchTagResult({keyword}){
   const navigation = useNavigation();
   const renderTag = ({item})=>{
     //console.log("renderTag::item=",item);
+    if(item.totalSayings===0) return <></>;
     return (
       <TouchableOpacity
         onPress={()=>navigation.navigate("SayingList",{
@@ -83,7 +84,8 @@ function SearchTagResult({keyword}){
         <View style={{
           flexDirection:"row",
           flex:1, 
-          justifyContent:"space-between"
+          justifyContent:"space-between",
+          alignItems:"center"
         }}>
           <View style={CSS.tagLeft}> 
             <Text style={CSS.tagText}>{item.name}</Text>
@@ -125,19 +127,20 @@ function SearchTagResult({keyword}){
     let len = data.searchTag.length;
     if(len){
       let lastId = data.searchTag[len-1].id;
+      console.log("lastId:",lastId);
       //console.log("lastId:",lastId);
       return(
         <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
             keyboardShouldPersistTaps="handled"
-            onEndReachedThreshold={0}
-            onEndReached={()=>fetchMore({
+            onEndReachedThreshold={0.5}
+            onEndReached={()=>{fetchMore({
             variables:{
               keyword: keyword,
               take: TAKE,
               lastId: lastId
             }
-            })}
+            })}}
             style={{
               paddingTop: 30
             }}
@@ -162,6 +165,7 @@ function SearchAuthorResult({keyword}){
   const darkmode = useColorScheme()==="dark";
   const renderAuthor = ({item})=>{
     //console.log("renderTag::item=",item);
+    if(item.totalSayings===0) return <></>;
     return (
       <TouchableOpacity 
         onPress={()=>navigation.navigate("SayingList",{
@@ -173,7 +177,8 @@ function SearchAuthorResult({keyword}){
         <View style={{
           flexDirection:"row",
           flex:1, 
-          justifyContent:"space-between"
+          justifyContent:"space-between",
+          alignItems:"center"
         }}>
           <View style={CSS.tagLeft}> 
             <Text style={CSS.tagText}>{item.name}</Text>
@@ -218,7 +223,7 @@ function SearchAuthorResult({keyword}){
         <SafeAreaView style={{width:"100%", flex:1}}>
           <FlatList
             keyboardShouldPersistTaps="handled"
-            onEndReachedThreshold={0}
+            onEndReachedThreshold={0.5}
             onEndReached={()=>fetchMore({
             variables:{
               keyword: keyword,

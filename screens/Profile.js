@@ -111,11 +111,11 @@ export default function Search({navigation,route}){
             <Ionicons name="chevron-forward" color={textColor} size={24}/>
           </TouchableOpacity>
           <TouchableOpacity 
-            onPress={()=>navigation.push("SayingList",{
+            /*onPress={()=>navigation.push("SayingList",{
               id: Number(user.id),
               keyword: user.name,
               type: "userLike",
-            })}
+            })}*/
             style={css.itemContainer(darkmode)}
           >
             <View style={css.itemLeft}>

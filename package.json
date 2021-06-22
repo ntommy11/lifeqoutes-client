@@ -42,7 +42,8 @@
     "react-native-switch-selector": "^2.1.4",
     "react-native-web": "^0.15.5",
     "styled-components": "^5.2.3",
-    "@react-native-picker/picker": "1.9.2"
+    "@react-native-picker/picker": "1.9.2",
+    "expo-ads-admob": "~8.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

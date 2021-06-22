@@ -12,12 +12,11 @@ import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import LoggedInNav from './navigators/LoggedInNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
-import { isEmpty } from './utils';
-import useUser from './hooks/useUser';
+
+import { AdMobBanner } from 'expo-ads-admob';
+
+const AD_ID = "ca-app-pub-9250217630003485/4284257886";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -73,6 +72,12 @@ export default function App() {
       <AppearanceProvider>
         <NavigationContainer>
           {isLoggedIn? <LoggedInNav/>:<LoggedOutNav/>}
+          <AdMobBanner
+            style={styles.adcard}
+            adUnitID={AD_ID}
+            servePersonalizedAds
+            onDidFailToReceiveAdWithError={this.bannerError}
+          />
         </NavigationContainer>
       </AppearanceProvider>
     </ApolloProvider>
@@ -88,5 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  adcard:{
+      marginVertical: 5,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 });
 

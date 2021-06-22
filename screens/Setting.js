@@ -1,12 +1,13 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { Button, Text,View,Platform, Alert } from 'react-native';
-
 import ScreenLayout from "../components/ScreenLayout";
 import {Picker} from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useColorScheme } from 'react-native-appearance';
 
 const BUTTON_COLOR = "#0A82FF"
 
@@ -28,13 +29,33 @@ for(let i=0;i<60;i++){
   minutes[i]=i;
 }
 export default function Setting(){
-  const [hour, setHour] = useState(7);
-  const [minute, setMinute] = useState(30);
+  const darkmode = useColorScheme()==="dark";
+  const [hour, setHour] = useState(8);
+  const [minute, setMinute] = useState(0);
+  console.log(hour,minute);
+  useEffect(()=>{
+    async function getTime(){
+      const savedHour = await AsyncStorage.getItem("pushHour");
+      const savedMinute = await AsyncStorage.getItem("pushMinute");
+      console.log("savedHour:",savedHour);
+      console.log("savedMinute:",savedMinute);
+      if(savedHour!==null && savedMinute!==null){
+        setHour(Number(savedHour));
+        setMinute(Number(savedMinute));
+      }
+    }
+    try{
+      setTimeout(getTime,500);
+    }catch(e){
+      console.log(e);
+    }
+  },[]);
 
   const [registerTime] = useMutation(REGISTER_TIME,{
     onCompleted:(data)=>{
-      console.log(data);
       Alert.alert("푸시알림이 등록되었습니다.");
+      AsyncStorage.setItem('pushHour',String(hour));
+      AsyncStorage.setItem('pushMinute',String(minute));
     }
   });
   return <ScreenLayout>
@@ -68,11 +89,13 @@ export default function Setting(){
             width: 100,
           }}
           mode="dropdown"
-          onValueChange={(val,idx)=>setHour(val)}
+          onValueChange={(val,idx)=>{
+            console.log("onValueChange:val=",val);
+            setHour(val)
+          }}
         >
           {
             hours.map((item,index)=>{
-              console.log(index);
               return <Picker.Item key={index} label={String(index)+"시"} value={index}/>
             })
           }
@@ -85,11 +108,11 @@ export default function Setting(){
             height: 50,
             width: 100,
           }}
+          mode="dropdown"
           onValueChange={(val,idx)=>setMinute(val)}
         >
           {
             minutes.map((item,index)=>{
-              console.log(index);
               return <Picker.Item key={index} label={String(index)+"분"} value={index}/>
             })
           }

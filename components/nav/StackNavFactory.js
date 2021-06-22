@@ -62,7 +62,7 @@ export default function StackNavFactory({screenName}){
       headerStyle:{
         shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"#dedede",
         backgroundColor: colorScheme==="dark"?colors.darker:"white",
-        height: 150,
+        height: 120,
       }
     }}/>
   </Stack.Navigator>
