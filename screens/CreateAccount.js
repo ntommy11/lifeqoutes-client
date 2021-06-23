@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import React from 'react';
 import { useRef,useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { View,Text, KeyboardAvoidingView, Platform } from 'react-native';
+import { View,Text, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from "styled-components/native";
 import AuthButton from '../components/auth/AuthButton';
 import AuthLayout from '../components/auth/AuthLayout';
@@ -38,6 +38,8 @@ export default function CreateAccount({navigation}){
         email:email,
         password:password,
       });
+    }else{
+      Alert.alert("이미 사용중입니다.");
     }
   }
 

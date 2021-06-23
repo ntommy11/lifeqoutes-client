@@ -14,6 +14,8 @@ import ScreenLayout from '../components/ScreenLayout';
 const TAKE = 50;
 
 function Tag({id,isFollowing,name,totalSayings}){
+  const darkmode = useColorScheme()==="dark";
+  if(totalSayings===0) return <></>;
   const [likeTag] = useMutation(LIKE_TAG,{
     variables:{
       id,
@@ -68,7 +70,7 @@ function Tag({id,isFollowing,name,totalSayings}){
           marginVertical: 5,
           justifyContent: "center",
           alignItems:"center",
-          backgroundColor:"#efefef"
+          backgroundColor:darkmode?"#232323":"#efefef"
         }
     }>
       <Text style={
