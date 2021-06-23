@@ -71,13 +71,14 @@ export default function App() {
     <ApolloProvider client={client}>
       <AppearanceProvider>
         <NavigationContainer>
-          {isLoggedIn? <LoggedInNav/>:<LoggedOutNav/>}
           <AdMobBanner
             style={styles.adcard}
             adUnitID={AD_ID}
             servePersonalizedAds
             onDidFailToReceiveAdWithError={this.bannerError}
           />
+          {isLoggedIn? <LoggedInNav/>:<LoggedOutNav/>}
+
         </NavigationContainer>
       </AppearanceProvider>
     </ApolloProvider>

@@ -15,6 +15,15 @@ import SayingSmall from '../components/SayingSmall';
 import Saying from '../components/Saying';
 import {colors} from '../colors'
 
+//debounce helper 
+const debounce = (func,delay)=>{
+  let timeoutId = null;
+  return (...arg)=>{
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(func.bind(null,...arg),delay);
+  }
+}
+
 // 무한 스크롤 fetch 데이터레코드 수 
 const TAKE = 40;
 const TAG_COLOR = "#91F8D0";
@@ -372,7 +381,7 @@ export default function Search({navigation}){
           autoCaptialize="none"      
           returnKeyType="search"
           autoCorrect={false}
-          onChangeText={(text)=>setValue("keyword", text)}
+          onChangeText={debounce((text)=>setValue("keyword", text),500)}
         />
       </View>
     </View>

@@ -35,7 +35,7 @@ export default function StackNavFactory({screenName}){
       }
   }}>
     {screenName==="Today"?<Stack.Screen name={"Today"} component={Today} options={{
-      headerTitle: ()=><Text style={{color: "white", fontWeight: "bold", fontSize: 24}}>인생글귀</Text>
+      headerTitle: ()=><Text style={{color: darkmode?"white":"black", fontWeight: "bold", fontSize: 24, textAlign:"center"}}>인생글귀</Text>
     }}/>:null}
     {screenName==="Search"?<Stack.Screen name={"Search"} component={Search} options={{
       headerBackTitleVisible: false,
