@@ -325,14 +325,7 @@ function Header({id,refetch}){
                 <Text style={ss.author(colorScheme)}>{author.name}</Text>
               </View>
             </View>
-            <View style={{flexDirection:"row", paddingBottom:10, width:"100%", alignItems:"center",justifyContent:"center"}}>
-              <TouchableOpacity>
-                <Ionicons name="download-outline" color={textColor} size={32}/>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Ionicons name="share-social-outline" color={textColor} size={32}/>
-              </TouchableOpacity>
-            </View>
+
             <Info {...data.seeSaying} textColor={textColor}/>
             <Form id={id} darkmode={darkmode} textColor={textColor} refetch={refetch}/>
           </View>

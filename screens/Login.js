@@ -88,7 +88,7 @@ export default function Login({route}){
         secureTextEntry={true}
       />
       <AuthButton 
-        text="Log in" 
+        text="로그인" 
         disabled={!watch("email")||!watch("password")}  
         onPress={handleSubmit(onValid)} 
         loading={loading} />

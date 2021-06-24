@@ -45,7 +45,7 @@ export default function Setting(){
       }
     }
     try{
-      setTimeout(getTime,500);
+      setTimeout(getTime,250);
     }catch(e){
       console.log(e);
     }

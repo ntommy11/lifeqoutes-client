@@ -28,7 +28,7 @@ export default function StackNavFactory({screenName}){
       headerStyle:{
         shadowColor: colorScheme==="dark"?"rgba(255,255,255,0.2)":"#dedede",
         backgroundColor: colorScheme==="dark"?colors.darker:"white",
-        height: 80,
+        height: 60,
       },
       cardStyle:{
         backgroundColor: darkmode?colors.darker:"white", // <- 중요! 스택 스크린 렌더링 전 기본 배경값 지정. 이걸 안하면 로드 시 처음에 껌뻑거릴 수 있다. 
@@ -43,7 +43,7 @@ export default function StackNavFactory({screenName}){
       headerStyle:{
         shadowColor: 'transparent',
         backgroundColor: colorScheme==="dark"?colors.darker:"white",
-        height: 150,
+        height: 120,
       }
       }}/>:null}
     {screenName==="Create"?<Stack.Screen name={"Create"} component={Create} options={{

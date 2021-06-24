@@ -30,14 +30,15 @@
       "useNextNotificationsApi": true,
       "package": "com.ntommy.wisesaying",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "googleServicesFile": "./google-services.json",
       "versionCode":1,
       "config":{
         "googleMobileAdsAppId": "ca-app-pub-9250217630003485~4080322337"
-      }
+      },
+      "icon": "./assets/icon.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"

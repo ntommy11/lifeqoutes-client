@@ -85,7 +85,7 @@ export default function CreateAccount({navigation}){
     <AuthLayout>
         <TextInput 
           ref = {usernameRef}
-          placeholder="이름"
+          placeholder="닉네임(한글가능)"
           placeholderTextColor="gray"
           returnKeyType="next"
           autoCapitalize={"none"}
@@ -94,7 +94,7 @@ export default function CreateAccount({navigation}){
         />
         <TextInput
           ref = {emailRef} 
-          placeholder="이메일"
+          placeholder="아이디"
           placeholderTextColor="gray"
           returnKeyType="next"
           autoCapitalize={"none"}
@@ -110,6 +110,7 @@ export default function CreateAccount({navigation}){
           onSubmitEditing={handleSubmit(onValid)}
           lastOne={true}
           onChangeText={(text)=>setValue("password",text)}
+          secureTextEntry={true}
         />
         <AuthButton text="계정 만들기" disabled={!watch("email")||!watch("password")||!watch("username")} onPress={handleSubmit(onValid)} />
     </AuthLayout>

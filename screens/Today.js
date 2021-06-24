@@ -1,11 +1,12 @@
 import { useQuery } from '@apollo/client';
-import { NavigationHelpersContext } from '@react-navigation/core';
+import { NavigationHelpersContext, useFocusEffect, useIsFocused } from '@react-navigation/core';
 import gql from 'graphql-tag';
-import React from 'react';
-import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native"
+import React, { useEffect } from 'react';
+import { Text, View, TouchableOpacity, ActivityIndicator, ScrollView, Alert } from "react-native"
 import { logUserOut } from '../apollo';
 import Saying from '../components/Saying';
 import ScreenLayout from '../components/ScreenLayout';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const TODAY_QUERY = gql`
@@ -34,23 +35,41 @@ const TODAY_QUERY = gql`
 `
 
 export default function Today({navigation}){
-  const { data, loading, error } = useQuery(TODAY_QUERY);
+  const { data, loading, error, refetch, startPolling, stopPolling } = useQuery(TODAY_QUERY,{
+    fetchPolicy:"network-only",
+    notifyOnNetworkStatusChange:true,
+    onCompleted:()=>{
+      console.log("query completed");
+    },
+  });
+  const isFocused = useIsFocused();
+  useEffect(()=>{
+    console.log("isFocused:",isFocused);
+    if(isFocused){
+      startPolling(1000);
+      setTimeout(()=>{
+        stopPolling()
+      },3000);
+    }
+  },[isFocused])
   if(error){
     console.log(error);
   }
   if(data){
-    console.log(data);
-    return(
-      <ScreenLayout>
-
-        {          
-        <Saying {...data.seeFeed} today={true}/>
-        }
-      </ScreenLayout>
-    )
+    //console.log("data=",data);
+    if(data.seeFeed!==null){
+      return(
+        <ScreenLayout>
+          <ScrollView style={{width:"100%", flex:1}} contentContainerStyle={{justifyContent:"center", alignItems:"center"}}>
+            {          
+            <Saying {...data.seeFeed} today={true}/>
+            }
+          </ScrollView>
+        </ScreenLayout>
+      )
+    } 
   }
   return <ScreenLayout>
     <ActivityIndicator color="white"/>
-    <TouchableOpacity onPress={()=>logUserOut()}><Text>logout</Text></TouchableOpacity>
   </ScreenLayout>
 }

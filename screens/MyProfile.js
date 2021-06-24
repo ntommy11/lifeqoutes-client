@@ -82,7 +82,7 @@ export default function Search({navigation}){
   const [logoutMutation] = useMutation(LOGOUT,{
     onCompleted:(data)=>{
       console.log(data);
-      Alert.alert("로그아웃");
+      //Alert.alert("로그아웃");
     },
   });
   const [value, setValue] = useState("");

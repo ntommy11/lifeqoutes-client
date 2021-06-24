@@ -54,6 +54,7 @@ function SayingByUserCreate({userId}){
           <FlatList
             refreshing={refreshing}
             onRefresh={refresh}
+            onEndReachedThreshold={0.3}
             onEndReached={()=>fetchMore({
             variables:{
               userId: userId,
@@ -112,7 +113,8 @@ function SayingsByUserLike({userId}){
     variables:{
       userId: userId,
       take: 500
-    }
+    },
+    fetchPolicy:"no-cache"
   });
   if(error){
     console.log(error);
@@ -127,6 +129,7 @@ function SayingsByUserLike({userId}){
           <FlatList
             refreshing={refreshing}
             onRefresh={refresh}
+            onEndReachedThreshold={0.3}
             onEndReached={()=>fetchMore({
             variables:{
               userId: userId,
@@ -196,6 +199,7 @@ function SayingsByTag({id}){
           <FlatList
             refreshing={refreshing}
             onRefresh={refresh}
+            onEndReachedThreshold={0.3}
             onEndReached={()=>fetchMore({
             variables:{
               id: id,
@@ -264,14 +268,16 @@ function SayingsByAuthor({id}){
           <FlatList
             refreshing={refreshing}
             onRefresh={refresh}
-            onEndReachedThreshold={0}
-            onEndReached={()=>fetchMore({
+            onEndReachedThreshold={0.3}
+            onEndReached={()=>{
+              //Alert.alert("END!");
+              fetchMore({
               variables:{
                 id: id,
                 take: TAKE,
                 lastId: lastId
               }
-            })}
+            })}}
             
             style={{
               flex: 1,
